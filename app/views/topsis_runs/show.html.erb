@@ -1,0 +1,113 @@
+<% content_for :title, "Rincian Komputasi TOPSIS" %>
+
+<div class="page-head">
+  <div>
+    <h1>Rincian Komputasi TOPSIS</h1>
+    <p>
+      UC-07 &middot; <%= l @topsis_run.executed_at, format: :long %>
+      <%= "oleh #{@topsis_run.executed_by.name}" if @topsis_run.executed_by %>
+    </p>
+  </div>
+  <div class="page-head__actions">
+    <%= link_to "Papan peringkat", event_leaderboard_path(@event), class: "btn" %>
+    <%= link_to "Riwayat", event_topsis_runs_path(@event), class: "btn btn--ghost" %>
+  </div>
+</div>
+
+<div class="card">
+  <span class="step__label">Langkah 1</span>
+  <h2>Matriks keputusan (X)</h2>
+  <p class="card__note">Nilai hasil pre-processing pada skala 0&ndash;100 untuk setiap alternatif.</p>
+  <%= render "matrix", criteria: @criteria, rows: @topsis_run.decision_matrix, precision: 2 %>
+</div>
+
+<div class="card">
+  <span class="step__label">Langkah 2</span>
+  <h2>Matriks ternormalisasi (R)</h2>
+  <div class="formula">r&#8339;&#8341; = x&#8339;&#8341; / &radic;(&sum; x&#8339;&#8341;&sup2;)</div>
+  <%= render "matrix", criteria: @criteria, rows: @topsis_run.normalized_matrix, precision: 4 %>
+</div>
+
+<div class="card">
+  <span class="step__label">Langkah 3</span>
+  <h2>Matriks ternormalisasi terbobot (Y)</h2>
+  <div class="formula">y&#8339;&#8341; = w&#8341; &times; r&#8339;&#8341;</div>
+  <p class="card__note">
+    Bobot yang dipakai saat eksekusi:
+    <% @topsis_run.weights_snapshot.each do |code, weight| %>
+      <span class="badge"><%= code %> <%= percent(weight) %></span>
+    <% end %>
+  </p>
+  <%= render "matrix", criteria: @criteria, rows: @topsis_run.weighted_matrix, precision: 4 %>
+</div>
+
+<div class="card">
+  <span class="step__label">Langkah 4</span>
+  <h2>Solusi ideal positif (A&#8314;) dan negatif (A&#8315;)</h2>
+  <p class="card__note">
+    Seluruh kriteria bertipe benefit, sehingga A&#8314; mengambil nilai terbesar dan
+    A&#8315; nilai terkecil pada setiap kolom matriks Y.
+  </p>
+  <div class="table-wrap">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>Solusi</th>
+          <% @criteria.each do |criterion| %>
+            <th class="num"><%= criterion.code %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>A&#8314;</th>
+          <% @criteria.each do |criterion| %>
+            <td class="num"><%= decimal4(@topsis_run.ideal_positive[criterion.code]) %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <th>A&#8315;</th>
+          <% @criteria.each do |criterion| %>
+            <td class="num"><%= decimal4(@topsis_run.ideal_negative[criterion.code]) %></td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <span class="step__label">Langkah 5 dan 6</span>
+  <h2>Jarak Euclidean dan nilai preferensi</h2>
+  <div class="formula">
+    D&#8314;&#8339; = &radic;(&sum; (y&#8339;&#8341; &minus; y&#8314;&#8341;)&sup2;) &nbsp;&middot;&nbsp;
+    D&#8315;&#8339; = &radic;(&sum; (y&#8339;&#8341; &minus; y&#8315;&#8341;)&sup2;) &nbsp;&middot;&nbsp;
+    V&#8339; = D&#8315;&#8339; / (D&#8314;&#8339; + D&#8315;&#8339;)
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Kode</th>
+          <th>Nama peserta</th>
+          <th class="num">Jarak ideal positif (D&#8314;)</th>
+          <th class="num">Jarak ideal negatif (D&#8315;)</th>
+          <th class="num">Nilai preferensi (V&#8339;)</th>
+          <th>Peringkat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @ranking_results.each do |result| %>
+          <tr>
+            <td class="mono"><%= result.participant.alternative_code %></td>
+            <td><%= result.participant.name %></td>
+            <td class="num"><%= decimal4(result.d_positive) %></td>
+            <td class="num"><%= decimal4(result.d_negative) %></td>
+            <td class="num"><%= decimal4(result.preference_value) %></td>
+            <td><span class="rank rank--<%= result.rank %>"><%= result.award_label %></span></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

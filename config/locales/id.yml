@@ -1,0 +1,77 @@
+id:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%-d %B %Y"
+      short: "%-d %b"
+    day_names: [Minggu, Senin, Selasa, Rabu, Kamis, Jumat, Sabtu]
+    abbr_day_names: [Min, Sen, Sel, Rab, Kam, Jum, Sab]
+    month_names: [~, Januari, Februari, Maret, April, Mei, Juni, Juli, Agustus, September, Oktober, November, Desember]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, Mei, Jun, Jul, Agu, Sep, Okt, Nov, Des]
+
+  time:
+    formats:
+      default: "%-d %B %Y %H:%M"
+      long: "%-d %B %Y, %H:%M"
+      short: "%-d %b %H:%M"
+
+  number:
+    format:
+      separator: ","
+      delimiter: "."
+      precision: 2
+
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "tidak boleh kosong"
+      taken: "sudah digunakan"
+      invalid: "tidak sesuai format"
+      greater_than: "harus lebih besar dari %{count}"
+      greater_than_or_equal_to: "harus lebih besar atau sama dengan %{count}"
+      less_than: "harus lebih kecil dari %{count}"
+      less_than_or_equal_to: "harus lebih kecil atau sama dengan %{count}"
+      not_a_number: "harus berupa angka"
+      confirmation: "tidak cocok dengan %{attribute}"
+
+  activerecord:
+    models:
+      user: Pengguna
+      event: Event
+      criterion: Kriteria
+      participant: Peserta
+      activity_log: Log aktivitas
+      criterion_score: Skor kriteria
+      topsis_run: Perhitungan TOPSIS
+      ranking_result: Hasil peringkat
+    attributes:
+      user:
+        name: Nama
+        email_address: Alamat email
+        password: Kata sandi
+        role: Peran
+      event:
+        name: Nama event
+        start_date: Tanggal mulai
+        end_date: Tanggal berakhir
+        total_weeks: Jumlah minggu
+      criterion:
+        code: Kode kriteria
+        name: Nama kriteria
+        weight: Bobot
+        position: Posisi
+      participant:
+        nip: NIP
+        name: Nama peserta
+        department: Departemen
+        alternative_code: Kode alternatif
+      activity_log:
+        activity_date: Tanggal aktivitas
+        activity_type: Jenis aktivitas
+        raw_points: Poin
+        distance_km: Jarak
+      criterion_score:
+        normalized_value: Nilai ternormalisasi
+      ranking_result:
+        preference_value: Nilai preferensi
+        rank: Peringkat

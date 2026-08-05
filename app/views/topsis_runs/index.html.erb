@@ -1,0 +1,56 @@
+<% content_for :title, "Perhitungan TOPSIS" %>
+
+<div class="page-head">
+  <div>
+    <h1>Perhitungan TOPSIS</h1>
+    <p>UC-07 &middot; Riwayat eksekusi kalkulasi pada <%= @event.name %>.</p>
+  </div>
+  <div class="page-head__actions">
+    <%= button_to "Hitung TOPSIS", event_topsis_runs_path(@event), class: "btn" %>
+  </div>
+</div>
+
+<div class="card">
+  <% if @topsis_runs.empty? %>
+    <div class="empty">
+      <p>
+        Belum ada perhitungan. Pastikan pre-processing sudah dijalankan dan total
+        bobot kriteria tepat 100%.
+      </p>
+      <%= button_to "Hitung sekarang", event_topsis_runs_path(@event), class: "btn" %>
+    </div>
+  <% else %>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Waktu eksekusi</th>
+            <th>Dieksekusi oleh</th>
+            <th class="num">Peserta</th>
+            <th>Juara 1</th>
+            <th class="num">Nilai preferensi</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @topsis_runs.each do |run| %>
+            <% winner = run.winner %>
+            <tr>
+              <td><%= l run.executed_at, format: :long %></td>
+              <td><%= run.executed_by&.name || "-" %></td>
+              <td class="num"><%= run.ranking_results.count %></td>
+              <td><%= winner&.participant&.name || "-" %></td>
+              <td class="num"><%= winner ? decimal4(winner.preference_value) : "-" %></td>
+              <td>
+                <div class="cell-actions">
+                  <%= link_to "Rincian komputasi", event_topsis_run_path(@event, run),
+                        class: "btn btn--ghost btn--sm" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

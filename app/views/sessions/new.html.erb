@@ -1,0 +1,34 @@
+<% content_for :title, "Masuk" %>
+
+<div class="login__brand">
+  <span class="brand__mark">SPK</span>
+  <h1>Sistem Pendukung Keputusan SEBUSE</h1>
+  <p>Pemeringkatan Corporate Wellness Program &middot; Metode TOPSIS</p>
+</div>
+
+<div class="card">
+  <%= form_with url: session_path, class: "form" do |form| %>
+    <div class="field">
+      <%= form.label :email_address, "Alamat email" %>
+      <%= form.email_field :email_address, required: true, autofocus: true,
+            autocomplete: "username", value: params[:email_address] %>
+    </div>
+
+    <div class="field">
+      <%= form.label :password, "Kata sandi" %>
+      <%= form.password_field :password, required: true,
+            autocomplete: "current-password", maxlength: 72 %>
+    </div>
+
+    <%= form.submit "Masuk", class: "btn btn--block" %>
+  <% end %>
+
+  <div class="login__hint">
+    <%= link_to "Lupa kata sandi?", new_password_path %>
+    <br>
+    Akun contoh: <span class="mono">superadmin@cahayasuarautama.co.id</span>,
+    <span class="mono">panitia@cahayasuarautama.co.id</span>,
+    <span class="mono">peserta@cahayasuarautama.co.id</span>
+    &middot; kata sandi <span class="mono">sebuse2026</span>
+  </div>
+</div>

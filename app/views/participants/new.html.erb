@@ -1,0 +1,12 @@
+<% content_for :title, "Tambah Peserta" %>
+
+<div class="page-head">
+  <div>
+    <h1>Tambah Peserta</h1>
+    <p>UC-04 &middot; <%= @event.name %></p>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", event: @event, participant: @participant %>
+</div>

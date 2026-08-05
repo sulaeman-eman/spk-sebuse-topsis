@@ -1,0 +1,76 @@
+<% content_for :title, "Log Aktivitas" %>
+
+<div class="page-head">
+  <div>
+    <h1>Log Aktivitas</h1>
+    <p>
+      <%= @participant.alternative_code %> <%= @participant.name %> &middot;
+      <%= @activity_logs.size %> baris data mentah.
+    </p>
+  </div>
+  <div class="page-head__actions">
+    <%= link_to "Catat aktivitas", new_participant_activity_log_path(@participant), class: "btn" %>
+    <%= link_to "Kembali ke peserta", event_participants_path(@participant.event), class: "btn btn--ghost" %>
+  </div>
+</div>
+
+<div class="card">
+  <% if @activity_logs.empty? %>
+    <div class="empty">
+      <p>Belum ada log aktivitas. Catat manual, atau unggah berkas rekap saat fitur impor tersedia.</p>
+      <%= link_to "Catat aktivitas pertama", new_participant_activity_log_path(@participant), class: "btn" %>
+    </div>
+  <% else %>
+    <p class="card__note">
+      Poin harian yang melampaui kuota <%= @participant.event.daily_point_cap %> poin ditandai, dan
+      akan dipangkas otomatis saat pre-processing dijalankan.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Jenis</th>
+            <th class="num">Poin</th>
+            <th class="num">Jarak (KM)</th>
+            <th>Bukti</th>
+            <th>Sumber</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @activity_logs.each do |log| %>
+            <tr>
+              <td>
+                <%= l log.activity_date, format: :long %>
+                <% if @points_per_day[log.activity_date].to_f > @participant.event.daily_point_cap %>
+                  <span class="badge badge--warn">
+                    <%= decimal2(@points_per_day[log.activity_date]) %> poin/hari
+                  </span>
+                <% end %>
+              </td>
+              <td><%= activity_type_label(log.activity_type) %></td>
+              <td class="num"><%= decimal2(log.raw_points) %></td>
+              <td class="num"><%= log.distance_km ? decimal2(log.distance_km) : "-" %></td>
+              <td>
+                <% if log.evidence_valid %>
+                  <span class="badge badge--ok">Valid</span>
+                <% else %>
+                  <span class="badge badge--bad">Ditolak</span>
+                <% end %>
+              </td>
+              <td><span class="badge"><%= log.source == "import" ? "Impor" : "Manual" %></span></td>
+              <td>
+                <div class="cell-actions">
+                  <%= button_to "Hapus", participant_activity_log_path(@participant, log), method: :delete,
+                        class: "btn btn--danger btn--sm",
+                        form: { data: { turbo_confirm: "Hapus log ini?" } } %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

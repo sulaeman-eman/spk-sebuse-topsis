@@ -1,0 +1,40 @@
+<%= form_with model: [ event, participant ], class: "form" do |form| %>
+  <%= render "shared/errors", record: participant %>
+
+  <div class="field-row">
+    <div class="field">
+      <%= form.label :alternative_code, "Kode alternatif" %>
+      <%= form.text_field :alternative_code, required: true %>
+      <div class="field__hint">Penomoran A1, A2, dan seterusnya.</div>
+    </div>
+
+    <div class="field">
+      <%= form.label :nip, "NIP" %>
+      <%= form.text_field :nip, required: true %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :name, "Nama peserta" %>
+    <%= form.text_field :name, required: true %>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <%= form.label :department, "Departemen" %>
+      <%= form.text_field :department %>
+    </div>
+
+    <div class="field">
+      <%= form.label :user_id, "Akun peserta" %>
+      <%= form.collection_select :user_id, User.peserta.order(:name), :id, :name,
+            { include_blank: "Belum ditautkan" } %>
+      <div class="field__hint">Diperlukan agar peserta dapat membuka rincian skornya sendiri.</div>
+    </div>
+  </div>
+
+  <div class="form__actions">
+    <%= form.submit participant.new_record? ? "Simpan peserta" : "Simpan perubahan", class: "btn" %>
+    <%= link_to "Batal", event_participants_path(event), class: "btn btn--ghost" %>
+  </div>
+<% end %>

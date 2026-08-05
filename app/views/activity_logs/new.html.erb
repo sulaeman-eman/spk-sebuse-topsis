@@ -1,0 +1,62 @@
+<% content_for :title, "Catat Aktivitas" %>
+
+<div class="page-head">
+  <div>
+    <h1>Catat Aktivitas</h1>
+    <p><%= @participant.alternative_code %> <%= @participant.name %></p>
+  </div>
+</div>
+
+<div class="card">
+  <%= form_with model: [ @participant, @activity_log ], class: "form" do |form| %>
+    <%= render "shared/errors", record: @activity_log %>
+
+    <div class="field-row">
+      <div class="field">
+        <%= form.label :activity_date, "Tanggal aktivitas" %>
+        <%= form.date_field :activity_date, required: true, autofocus: true %>
+      </div>
+
+      <div class="field">
+        <%= form.label :activity_type, "Jenis aktivitas" %>
+        <%= form.select :activity_type,
+              ActivityLog.activity_types.keys.map { |type| [ activity_type_label(type), type ] } %>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <%= form.label :raw_points, "Poin" %>
+        <%= form.number_field :raw_points, step: 0.5, min: 0, required: true %>
+        <div class="field__hint">Cardio dan strength 2 poin per sesi; fun sports 1 poin per sesi.</div>
+      </div>
+
+      <div class="field">
+        <%= form.label :distance_km, "Jarak (KM)" %>
+        <%= form.number_field :distance_km, step: 0.1, min: 0 %>
+        <div class="field__hint">
+          Wajib untuk Long Run, minimal <%= decimal2(@participant.event.long_run_target_km) %> KM
+          agar dihitung tuntas.
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <%= form.label :evidence_url, "Tautan bukti" %>
+      <%= form.text_field :evidence_url, placeholder: "https://medicalrjbb.com/..." %>
+    </div>
+
+    <div class="field">
+      <%= form.label :evidence_valid do %>
+        <%= form.check_box :evidence_valid %>
+        Bukti dinyatakan valid oleh panitia
+      <% end %>
+      <div class="field__hint">Menentukan nilai C10 Kualitas Evidence.</div>
+    </div>
+
+    <div class="form__actions">
+      <%= form.submit "Simpan log", class: "btn" %>
+      <%= link_to "Batal", participant_activity_logs_path(@participant), class: "btn btn--ghost" %>
+    </div>
+  <% end %>
+</div>

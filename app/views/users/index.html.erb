@@ -1,0 +1,43 @@
+<% content_for :title, "Data Pengguna" %>
+
+<div class="page-head">
+  <div>
+    <h1>Data Pengguna</h1>
+    <p>UC-02 &middot; Kelola akun beserta peranan dan hak aksesnya.</p>
+  </div>
+  <div class="page-head__actions">
+    <%= link_to "Tambah pengguna", new_user_path, class: "btn" %>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Email</th>
+          <th>Peran</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td><%= user.name %></td>
+            <td class="mono"><%= user.email_address %></td>
+            <td><span class="badge badge--role"><%= role_label(user) %></span></td>
+            <td>
+              <div class="cell-actions">
+                <%= link_to "Ubah", edit_user_path(user), class: "btn btn--ghost btn--sm" %>
+                <%= button_to "Hapus", user_path(user), method: :delete,
+                      class: "btn btn--danger btn--sm",
+                      form: { data: { turbo_confirm: "Hapus akun #{user.name}?" } } %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

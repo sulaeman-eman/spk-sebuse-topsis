@@ -1,0 +1,63 @@
+<% content_for :title, "Kriteria dan Bobot" %>
+
+<div class="page-head">
+  <div>
+    <h1>Kriteria dan Bobot</h1>
+    <p>UC-03 &middot; Sepuluh kriteria penilaian aktivitas SEBUSE, seluruhnya bertipe benefit.</p>
+  </div>
+  <div class="page-head__actions">
+    <% if @balanced %>
+      <span class="badge badge--ok">Total <%= percent(@total_weight) %> &middot; siap dihitung</span>
+    <% else %>
+      <span class="badge badge--bad">Total <%= percent(@total_weight) %> &middot; harus tepat 100%</span>
+    <% end %>
+  </div>
+</div>
+
+<div class="card">
+  <p class="card__note">
+    Bobot menentukan besar pengaruh setiap kriteria pada matriks ternormalisasi terbobot (Y).
+    Akumulasi seluruh bobot wajib tepat 100%; bila tidak, perubahan dibatalkan.
+  </p>
+
+  <%= form_with url: update_weights_criteria_path, method: :patch, class: "form form--wide" do |form| %>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Nama kriteria</th>
+            <th>Jenis</th>
+            <th class="num">Bobot (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @criteria.each do |criterion| %>
+            <tr>
+              <td class="mono"><%= criterion.code %></td>
+              <td><%= criterion.name %></td>
+              <td><span class="badge"><%= criterion.criterion_type.capitalize %></span></td>
+              <td class="num">
+                <% if manages_criteria? %>
+                  <%= number_field_tag "weights[#{criterion.code}]",
+                        (criterion.weight * 100).round(2),
+                        step: 0.01, min: 0.01, max: 100, required: true,
+                        style: "max-width: 110px; text-align: right;" %>
+                <% else %>
+                  <%= percent(criterion.weight) %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if manages_criteria? %>
+      <div class="form__actions">
+        <%= form.submit "Simpan kriteria & bobot", class: "btn" %>
+        <span class="field__hint">Total harus 100% agar tersimpan.</span>
+      </div>
+    <% end %>
+  <% end %>
+</div>

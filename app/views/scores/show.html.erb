@@ -1,0 +1,87 @@
+<% content_for :title, "Detail Skor" %>
+
+<div class="page-head">
+  <div>
+    <h1>Detail Skor Individu</h1>
+    <p>
+      UC-09 &middot; <%= @participant.alternative_code %> <%= @participant.name %>
+      <%= "&middot; #{@participant.department}".html_safe if @participant.department.present? %>
+    </p>
+  </div>
+  <div class="page-head__actions">
+    <%= link_to "Papan peringkat", event_leaderboard_path(@participant.event), class: "btn btn--ghost" %>
+    <% if runs_topsis? %>
+      <%= link_to "Log aktivitas", participant_activity_logs_path(@participant), class: "btn btn--ghost" %>
+    <% end %>
+  </div>
+</div>
+
+<% if @ranking_result %>
+  <div class="grid grid--stats">
+    <div class="stat">
+      <div class="stat__label">Peringkat</div>
+      <div class="stat__value"><%= @ranking_result.award_label %></div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Nilai preferensi</div>
+      <div class="stat__value"><%= decimal4(@ranking_result.preference_value) %></div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Jarak ideal positif</div>
+      <div class="stat__value"><%= decimal4(@ranking_result.d_positive) %></div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Jarak ideal negatif</div>
+      <div class="stat__value"><%= decimal4(@ranking_result.d_negative) %></div>
+    </div>
+  </div>
+<% end %>
+
+<div class="card">
+  <div class="card__head">
+    <h2>Capaian sepuluh kriteria</h2>
+    <span class="badge">Skala 0&ndash;100</span>
+  </div>
+
+  <% if @criterion_scores.empty? %>
+    <div class="empty">
+      <p>Belum ada skor. Pre-processing belum dijalankan untuk peserta ini.</p>
+      <% if runs_topsis? %>
+        <%= link_to "Ke halaman pre-processing", event_preprocessing_path(@participant.event), class: "btn" %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Kriteria</th>
+            <th>Bobot</th>
+            <th style="min-width: 170px;">Capaian</th>
+            <th>Catatan evaluasi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @criterion_scores.each do |score| %>
+            <tr>
+              <td class="mono"><%= score.criterion.code %></td>
+              <td><%= score.criterion.name %></td>
+              <td><%= percent(score.criterion.weight) %></td>
+              <td>
+                <div class="meter">
+                  <div class="meter__track">
+                    <div class="meter__fill meter__fill--<%= score_tier(score.normalized_value) %>"
+                         style="width: <%= score.normalized_value.to_f.clamp(0, 100) %>%"></div>
+                  </div>
+                  <span class="meter__value"><%= decimal2(score.normalized_value) %></span>
+                </div>
+              </td>
+              <td style="white-space: normal;"><%= score.notes.presence || "-" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

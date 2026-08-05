@@ -1,0 +1,25 @@
+<%# Menampilkan satu matriks tersimpan: kunci baris adalah kode alternatif. %>
+<div class="table-wrap">
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th>Alternatif</th>
+        <% criteria.each do |criterion| %>
+          <th class="num" title="<%= criterion.name %>"><%= criterion.code %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% rows.each do |code, values| %>
+        <tr>
+          <th><%= code %></th>
+          <% values.each do |value| %>
+            <td class="num">
+              <%= precision == 4 ? decimal4(value) : decimal2(value) %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

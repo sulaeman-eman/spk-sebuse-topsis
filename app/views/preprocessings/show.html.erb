@@ -1,0 +1,100 @@
+<% content_for :title, "Pre-processing Data" %>
+
+<div class="page-head">
+  <div>
+    <h1>Pre-processing Data</h1>
+    <p>UC-06 &middot; Mengubah log mentah menjadi matriks keputusan (X) berskala 0&ndash;100.</p>
+  </div>
+  <div class="page-head__actions">
+    <%= button_to "Jalankan pre-processing", event_preprocessing_path(@event), class: "btn" %>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Aturan yang diterapkan</h2>
+  <p class="card__note">Parameter diambil dari pengaturan event, dapat diubah di <%= link_to "halaman event", edit_event_path(@event) %>.</p>
+  <div class="table-wrap">
+    <table>
+      <tbody>
+        <tr>
+          <th>Kuota poin harian</th>
+          <td>Maksimal <%= @event.daily_point_cap %> poin per hari, kelebihannya dipangkas proporsional</td>
+        </tr>
+        <tr>
+          <th>C1 Cardio / C2 Strength</th>
+          <td>Poin didapat dibanding target bulanan <%= @event.target_cardio %> dan <%= @event.target_strength %> poin</td>
+        </tr>
+        <tr>
+          <th>C3 Long Run</th>
+          <td>2x tuntas <%= decimal2(@event.long_run_target_km) %> KM = 100, 1x = 50, 0x = 0</td>
+        </tr>
+        <tr>
+          <th>C4 Syarat mingguan</th>
+          <td>Minimal <%= @event.weekly_cardio_target %> cardio + <%= @event.weekly_strength_target %> strength per minggu</td>
+        </tr>
+        <tr>
+          <th>C5 Bonus mingguan</th>
+          <td><%= @event.bonus_cardio_target %> cardio + <%= @event.bonus_strength_target %> strength dalam satu minggu</td>
+        </tr>
+        <tr>
+          <th>C6 Aturan beruntun</th>
+          <td>
+            Maksimal <%= @event.max_consecutive_cardio_days %> hari cardio berturut-turut,
+            penalti <%= @event.streak_penalty_per_violation %> per rentetan pelanggaran
+          </td>
+        </tr>
+        <tr>
+          <th>C7 Pengukuran akhir</th>
+          <td>Dinilai manual oleh panitia, tidak ditimpa oleh pre-processing</td>
+        </tr>
+        <tr>
+          <th>C8 Fun sports</th>
+          <td>Kuota <%= @event.fun_sport_point_target %> poin sebulan</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card__head">
+    <h2>Matriks keputusan (X)</h2>
+    <%= link_to "Hitung TOPSIS", event_topsis_runs_path(@event) %>
+  </div>
+
+  <% if @participants.empty? %>
+    <div class="empty">
+      <p>Belum ada peserta pada event ini.</p>
+      <%= link_to "Tambah peserta", new_event_participant_path(@event), class: "btn" %>
+    </div>
+  <% else %>
+    <div class="table-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>Alternatif</th>
+            <th class="num">Log</th>
+            <% @criteria.each do |criterion| %>
+              <th class="num" title="<%= criterion.name %>"><%= criterion.code %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @participants.each do |participant| %>
+            <% scores = participant.criterion_scores.index_by(&:criterion_id) %>
+            <tr>
+              <th><%= participant.alternative_code %> <%= participant.name %></th>
+              <td class="num"><%= participant.activity_logs.size %></td>
+              <% @criteria.each do |criterion| %>
+                <% score = scores[criterion.id] %>
+                <td class="num" title="<%= score&.notes %>">
+                  <%= score ? decimal2(score.normalized_value) : "&mdash;".html_safe %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

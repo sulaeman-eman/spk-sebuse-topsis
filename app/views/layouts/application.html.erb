@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <title><%= content_for(:title) ? "#{content_for(:title)} - SPK SEBUSE" : "SPK SEBUSE" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="SPK SEBUSE">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <% if authenticated? %>
+      <header class="topbar">
+        <div class="topbar__inner">
+          <%= link_to root_path, class: "brand" do %>
+            <span class="brand__mark">SPK</span>
+            <span class="brand__text">SEBUSE <small>TOPSIS</small></span>
+          <% end %>
+
+          <nav class="nav">
+            <%= nav_link "Dasbor", root_path %>
+            <% if runs_topsis? %>
+              <%= nav_link "Event", events_path %>
+              <%= nav_link "Kriteria", criteria_path %>
+              <% if (event = Event.order(:start_date).last) %>
+                <%= nav_link "Peserta", event_participants_path(event) %>
+                <%= nav_link "Pre-processing", event_preprocessing_path(event) %>
+                <%= nav_link "TOPSIS", event_topsis_runs_path(event) %>
+                <%= nav_link "Peringkat", event_leaderboard_path(event) %>
+              <% end %>
+            <% elsif (event = Event.order(:start_date).last) %>
+              <%= nav_link "Peringkat", event_leaderboard_path(event) %>
+            <% end %>
+            <%= nav_link "Pengguna", users_path if manages_users? %>
+          </nav>
+
+          <div class="account">
+            <span class="account__name"><%= current_user.name %></span>
+            <span class="badge badge--role"><%= role_label(current_user) %></span>
+            <%= button_to "Keluar", session_path, method: :delete, class: "btn btn--ghost btn--sm" %>
+          </div>
+        </div>
+      </header>
+    <% end %>
+
+    <main class="<%= authenticated? ? "page" : "page page--bare" %>">
+      <%= render "shared/flash" %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

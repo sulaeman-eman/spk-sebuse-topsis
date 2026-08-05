@@ -1,0 +1,114 @@
+<% content_for :title, "Dasbor" %>
+
+<div class="page-head">
+  <div>
+    <h1>Dasbor</h1>
+    <p>
+      Selamat datang, <%= current_user.name %>.
+      <%= @event ? "Event aktif: #{@event.name}." : "Belum ada event terdaftar." %>
+    </p>
+  </div>
+  <% if @event && runs_topsis? %>
+    <div class="page-head__actions">
+      <%= link_to "Pre-processing", event_preprocessing_path(@event), class: "btn btn--ghost" %>
+      <%= button_to "Hitung TOPSIS", event_topsis_runs_path(@event), class: "btn" %>
+    </div>
+  <% end %>
+</div>
+
+<% if @event.nil? %>
+  <div class="card empty">
+    <p>Belum ada event SEBUSE. Jalankan <span class="mono">bin/rails db:seed</span> untuk memuat data awal.</p>
+  </div>
+<% else %>
+  <div class="grid grid--stats">
+    <div class="stat">
+      <div class="stat__label">Peserta</div>
+      <div class="stat__value"><%= @participant_count %></div>
+      <div class="stat__hint">alternatif penilaian</div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Sudah diproses</div>
+      <div class="stat__value"><%= @scored_count %></div>
+      <div class="stat__hint">punya matriks keputusan</div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Log aktivitas</div>
+      <div class="stat__value"><%= @activity_log_count %></div>
+      <div class="stat__hint">baris data mentah</div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Total bobot</div>
+      <div class="stat__value"><%= percent(@total_weight) %></div>
+      <div class="stat__hint">
+        <% if @criteria_balanced %>
+          <span class="badge badge--ok">Siap hitung</span>
+        <% else %>
+          <span class="badge badge--bad">Harus tepat 100%</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid--two">
+    <div class="card">
+      <div class="card__head">
+        <h2>Hasil pemeringkatan terakhir</h2>
+        <%= link_to "Papan peringkat", event_leaderboard_path(@event) %>
+      </div>
+
+      <% if @latest_run.nil? %>
+        <div class="empty">
+          <p>Perhitungan TOPSIS belum pernah dijalankan.</p>
+          <% if runs_topsis? %>
+            <%= button_to "Hitung sekarang", event_topsis_runs_path(@event), class: "btn" %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="card__note">
+          Dieksekusi <%= l @latest_run.executed_at, format: :long %>
+          <%= "oleh #{@latest_run.executed_by.name}" if @latest_run.executed_by %>
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Peringkat</th><th>Peserta</th><th class="num">Nilai preferensi</th></tr>
+            </thead>
+            <tbody>
+              <% @latest_run.ranking_results.leaderboard.includes(:participant).first(5).each do |result| %>
+                <tr>
+                  <td><span class="rank rank--<%= result.rank %>"><%= result.award_label %></span></td>
+                  <td><%= result.participant.name %></td>
+                  <td class="num"><%= decimal4(result.preference_value) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="card">
+      <h2>Langkah berikutnya</h2>
+      <% if runs_topsis? %>
+        <p class="card__note">Alur kerja panitia dari data mentah sampai peringkat akhir.</p>
+        <ol>
+          <li><%= link_to "Catat log aktivitas peserta", event_participants_path(@event) %></li>
+          <li><%= link_to "Jalankan pre-processing", event_preprocessing_path(@event) %> untuk membentuk matriks keputusan</li>
+          <li><%= link_to "Hitung metode TOPSIS", event_topsis_runs_path(@event) %></li>
+          <li><%= link_to "Umumkan papan peringkat", event_leaderboard_path(@event) %></li>
+        </ol>
+      <% else %>
+        <p class="card__note">Akses Anda sebagai peserta.</p>
+        <ul>
+          <li><%= link_to "Lihat papan peringkat", event_leaderboard_path(@event) %></li>
+          <% if @my_participant %>
+            <li><%= link_to "Lihat rincian skor saya", score_path(@my_participant) %></li>
+          <% else %>
+            <li>Akun Anda belum ditautkan ke data peserta. Hubungi panitia.</li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,96 @@
+<% content_for :title, "Ubah Aturan Event" %>
+
+<div class="page-head">
+  <div>
+    <h1>Ubah Aturan Event</h1>
+    <p>Parameter di sini dipakai langsung oleh mesin pre-processing.</p>
+  </div>
+</div>
+
+<div class="card">
+  <%= form_with model: @event, class: "form form--wide" do |form| %>
+    <%= render "shared/errors", record: @event %>
+
+    <div class="field">
+      <%= form.label :name, "Nama event" %>
+      <%= form.text_field :name, required: true %>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <%= form.label :start_date, "Tanggal mulai" %>
+        <%= form.date_field :start_date, required: true %>
+        <div class="field__hint">Minggu ke-1 dihitung mulai tanggal ini.</div>
+      </div>
+      <div class="field">
+        <%= form.label :end_date, "Tanggal berakhir" %>
+        <%= form.date_field :end_date, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :total_weeks, "Jumlah minggu program" %>
+        <%= form.number_field :total_weeks, min: 1, required: true %>
+      </div>
+    </div>
+
+    <h2>Target poin</h2>
+    <div class="field-row">
+      <div class="field">
+        <%= form.label :target_cardio, "Target cardio (C1)" %>
+        <%= form.number_field :target_cardio, min: 1, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :target_strength, "Target strength (C2)" %>
+        <%= form.number_field :target_strength, min: 1, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :long_run_target_km, "Jarak Long Run (C3, KM)" %>
+        <%= form.number_field :long_run_target_km, step: 0.1, min: 0.1, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :fun_sport_point_target, "Kuota fun sports (C8)" %>
+        <%= form.number_field :fun_sport_point_target, min: 1, required: true %>
+      </div>
+    </div>
+
+    <h2>Aturan mingguan</h2>
+    <div class="field-row">
+      <div class="field">
+        <%= form.label :weekly_cardio_target, "Syarat cardio/minggu (C4)" %>
+        <%= form.number_field :weekly_cardio_target, min: 1, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :weekly_strength_target, "Syarat strength/minggu (C4)" %>
+        <%= form.number_field :weekly_strength_target, min: 1, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :bonus_cardio_target, "Bonus cardio/minggu (C5)" %>
+        <%= form.number_field :bonus_cardio_target, min: 1, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :bonus_strength_target, "Bonus strength/minggu (C5)" %>
+        <%= form.number_field :bonus_strength_target, min: 1, required: true %>
+      </div>
+    </div>
+
+    <h2>Proteksi dan disiplin</h2>
+    <div class="field-row">
+      <div class="field">
+        <%= form.label :max_consecutive_cardio_days, "Batas cardio beruntun (C6, hari)" %>
+        <%= form.number_field :max_consecutive_cardio_days, min: 1, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :streak_penalty_per_violation, "Penalti per rentetan (C6)" %>
+        <%= form.number_field :streak_penalty_per_violation, min: 0, required: true %>
+      </div>
+      <div class="field">
+        <%= form.label :daily_point_cap, "Kuota poin harian (C9)" %>
+        <%= form.number_field :daily_point_cap, min: 1, required: true %>
+      </div>
+    </div>
+
+    <div class="form__actions">
+      <%= form.submit "Simpan aturan", class: "btn" %>
+      <%= link_to "Batal", event_path(@event), class: "btn btn--ghost" %>
+    </div>
+  <% end %>
+</div>

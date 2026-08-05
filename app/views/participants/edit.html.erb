@@ -1,0 +1,12 @@
+<% content_for :title, "Ubah Peserta" %>
+
+<div class="page-head">
+  <div>
+    <h1>Ubah Peserta</h1>
+    <p>UC-04 &middot; <%= @participant.alternative_code %> <%= @participant.name %></p>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", event: @event, participant: @participant %>
+</div>

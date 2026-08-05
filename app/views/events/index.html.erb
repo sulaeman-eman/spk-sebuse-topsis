@@ -1,0 +1,41 @@
+<% content_for :title, "Event" %>
+
+<div class="page-head">
+  <div>
+    <h1>Event SEBUSE</h1>
+    <p>Periode kompetisi beserta parameter regulasi penilaiannya.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nama event</th>
+          <th>Periode</th>
+          <th class="num">Peserta</th>
+          <th class="num">Minggu</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @events.each do |event| %>
+          <tr>
+            <td><%= link_to event.name, event_path(event) %></td>
+            <td><%= l event.start_date, format: :long %> &ndash; <%= l event.end_date, format: :long %></td>
+            <td class="num"><%= event.participants.count %></td>
+            <td class="num"><%= event.total_weeks %></td>
+            <td>
+              <div class="cell-actions">
+                <%= link_to "Peserta", event_participants_path(event), class: "btn btn--ghost btn--sm" %>
+                <%= link_to "Peringkat", event_leaderboard_path(event), class: "btn btn--ghost btn--sm" %>
+                <%= link_to "Ubah aturan", edit_event_path(event), class: "btn btn--ghost btn--sm" if runs_topsis? %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

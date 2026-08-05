@@ -1,0 +1,66 @@
+<% content_for :title, "Data Peserta" %>
+
+<div class="page-head">
+  <div>
+    <h1>Data Peserta</h1>
+    <p>UC-04 &middot; <%= @event.name %> &middot; <%= @participants.size %> alternatif penilaian.</p>
+  </div>
+  <div class="page-head__actions">
+    <%= link_to "Tambah peserta", new_event_participant_path(@event), class: "btn" %>
+  </div>
+</div>
+
+<div class="card">
+  <% if @participants.empty? %>
+    <div class="empty">
+      <p>Belum ada peserta terdaftar pada event ini.</p>
+      <%= link_to "Tambah peserta pertama", new_event_participant_path(@event), class: "btn" %>
+    </div>
+  <% else %>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>NIP</th>
+            <th>Nama</th>
+            <th>Departemen</th>
+            <th>Akun</th>
+            <th class="num">Skor terisi</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @participants.each do |participant| %>
+            <tr>
+              <td class="mono"><%= participant.alternative_code %></td>
+              <td class="mono"><%= participant.nip %></td>
+              <td><%= participant.name %></td>
+              <td><%= participant.department.presence || "-" %></td>
+              <td>
+                <% if participant.user %>
+                  <span class="badge badge--ok">Tertaut</span>
+                <% else %>
+                  <span class="badge">Belum</span>
+                <% end %>
+              </td>
+              <td class="num"><%= participant.criterion_scores.size %> / <%= Criterion.count %></td>
+              <td>
+                <div class="cell-actions">
+                  <%= link_to "Log aktivitas", participant_activity_logs_path(participant),
+                        class: "btn btn--ghost btn--sm" %>
+                  <%= link_to "Skor", score_path(participant), class: "btn btn--ghost btn--sm" %>
+                  <%= link_to "Ubah", edit_event_participant_path(@event, participant),
+                        class: "btn btn--ghost btn--sm" %>
+                  <%= button_to "Hapus", event_participant_path(@event, participant), method: :delete,
+                        class: "btn btn--danger btn--sm",
+                        form: { data: { turbo_confirm: "Hapus peserta #{participant.name} beserta seluruh lognya?" } } %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,12 @@
+<% content_for :title, "Ubah Pengguna" %>
+
+<div class="page-head">
+  <div>
+    <h1>Ubah Pengguna</h1>
+    <p>UC-02 &middot; <%= @user.name %></p>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", user: @user %>
+</div>

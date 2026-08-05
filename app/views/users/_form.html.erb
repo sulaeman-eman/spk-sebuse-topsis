@@ -1,0 +1,36 @@
+<%= form_with model: user, class: "form" do |form| %>
+  <%= render "shared/errors", record: user %>
+
+  <div class="field">
+    <%= form.label :name, "Nama lengkap" %>
+    <%= form.text_field :name, required: true, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :email_address, "Alamat email" %>
+    <%= form.email_field :email_address, required: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :role, "Peran" %>
+    <%= form.select :role,
+          User.roles.keys.map { |role| [ ApplicationHelper::ROLE_LABELS.fetch(role, role.humanize), role ] } %>
+    <div class="field__hint">
+      Super Admin mengelola pengguna dan bobot kriteria; Admin Panitia mengelola
+      peserta dan menjalankan perhitungan; Peserta hanya melihat peringkat dan skornya.
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :password, "Kata sandi" %>
+    <%= form.password_field :password, maxlength: 72, required: user.new_record? %>
+    <% unless user.new_record? %>
+      <div class="field__hint">Biarkan kosong bila kata sandi tidak diubah.</div>
+    <% end %>
+  </div>
+
+  <div class="form__actions">
+    <%= form.submit user.new_record? ? "Simpan pengguna" : "Simpan perubahan", class: "btn" %>
+    <%= link_to "Batal", users_path, class: "btn btn--ghost" %>
+  </div>
+<% end %>

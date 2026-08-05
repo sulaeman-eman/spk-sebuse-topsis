@@ -1,0 +1,68 @@
+<% content_for :title, @event.name %>
+
+<div class="page-head">
+  <div>
+    <h1><%= @event.name %></h1>
+    <p>
+      <%= l @event.start_date, format: :long %> &ndash; <%= l @event.end_date, format: :long %>
+      &middot; <%= @event.total_weeks %> minggu program
+    </p>
+  </div>
+  <div class="page-head__actions">
+    <%= link_to "Peserta", event_participants_path(@event), class: "btn btn--ghost" %>
+    <%= link_to "Papan peringkat", event_leaderboard_path(@event), class: "btn btn--ghost" %>
+    <%= link_to "Ubah aturan", edit_event_path(@event), class: "btn" if runs_topsis? %>
+  </div>
+</div>
+
+<div class="grid grid--stats">
+  <div class="stat">
+    <div class="stat__label">Peserta</div>
+    <div class="stat__value"><%= @participant_count %></div>
+  </div>
+  <div class="stat">
+    <div class="stat__label">Target cardio</div>
+    <div class="stat__value"><%= @event.target_cardio %></div>
+    <div class="stat__hint">poin sebulan</div>
+  </div>
+  <div class="stat">
+    <div class="stat__label">Target strength</div>
+    <div class="stat__value"><%= @event.target_strength %></div>
+    <div class="stat__hint">poin sebulan</div>
+  </div>
+  <div class="stat">
+    <div class="stat__label">Kuota harian</div>
+    <div class="stat__value"><%= @event.daily_point_cap %></div>
+    <div class="stat__hint">poin per hari</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Parameter regulasi</h2>
+  <div class="table-wrap">
+    <table>
+      <tbody>
+        <tr><th>Long Run wajib</th><td><%= decimal2(@event.long_run_target_km) %> KM, 2x sebulan</td></tr>
+        <tr><th>Syarat mingguan</th><td><%= @event.weekly_cardio_target %> cardio + <%= @event.weekly_strength_target %> strength</td></tr>
+        <tr><th>Bonus mingguan</th><td><%= @event.bonus_cardio_target %> cardio + <%= @event.bonus_strength_target %> strength</td></tr>
+        <tr><th>Batas cardio beruntun</th><td><%= @event.max_consecutive_cardio_days %> hari berturut-turut</td></tr>
+        <tr><th>Penalti per rentetan</th><td><%= @event.streak_penalty_per_violation %> poin</td></tr>
+        <tr><th>Kuota fun sports</th><td><%= @event.fun_sport_point_target %> poin sebulan</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<% if @latest_run %>
+  <div class="card">
+    <div class="card__head">
+      <h2>Perhitungan terakhir</h2>
+      <%= link_to "Rincian komputasi", event_topsis_run_path(@event, @latest_run) %>
+    </div>
+    <p class="card__note">
+      <%= l @latest_run.executed_at, format: :long %>
+      <%= "oleh #{@latest_run.executed_by.name}" if @latest_run.executed_by %>
+      &middot; juara 1 <strong><%= @latest_run.winner&.participant&.name %></strong>
+    </p>
+  </div>
+<% end %>

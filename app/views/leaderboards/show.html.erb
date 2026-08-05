@@ -1,0 +1,92 @@
+<% content_for :title, "Papan Peringkat" %>
+
+<div class="page-head">
+  <div>
+    <h1>Papan Peringkat</h1>
+    <p>
+      UC-08 &middot; <%= @event.name %>
+      <% if @topsis_run %>
+        &middot; hasil perhitungan <%= l @topsis_run.executed_at, format: :long %>
+      <% end %>
+    </p>
+  </div>
+  <% if @topsis_run && runs_topsis? %>
+    <div class="page-head__actions">
+      <%= link_to "Rincian komputasi", event_topsis_run_path(@event, @topsis_run), class: "btn btn--ghost" %>
+      <%= button_to "Hitung ulang", event_topsis_runs_path(@event), class: "btn" %>
+    </div>
+  <% end %>
+</div>
+
+<% if @topsis_run.nil? %>
+  <div class="card empty">
+    <p>Hasil pemeringkatan belum tersedia. Panitia belum menjalankan perhitungan TOPSIS.</p>
+    <% if runs_topsis? %>
+      <%= button_to "Hitung TOPSIS", event_topsis_runs_path(@event), class: "btn" %>
+    <% end %>
+  </div>
+<% else %>
+  <% if @my_result %>
+    <div class="grid grid--stats">
+      <div class="stat">
+        <div class="stat__label">Peringkat Anda</div>
+        <div class="stat__value"><%= @my_result.award_label %></div>
+        <div class="stat__hint">dari <%= @ranking_results.size %> peserta</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Nilai preferensi</div>
+        <div class="stat__value"><%= decimal4(@my_result.preference_value) %></div>
+        <div class="stat__hint">makin dekat 1 makin baik</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Rincian skor</div>
+        <div class="stat__value" style="font-size: 16px; margin-top: 12px;">
+          <%= link_to "Lihat 10 kriteria saya", score_path(@my_result.participant) %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="card">
+    <p class="card__note">
+      Diurutkan dari nilai preferensi (V&#8339;) tertinggi ke terendah. Nilai preferensi
+      mengukur kedekatan relatif setiap peserta terhadap solusi ideal.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Peringkat</th>
+            <th>Kode</th>
+            <th>Nama peserta</th>
+            <th>Departemen</th>
+            <th class="num">D&#8314;</th>
+            <th class="num">D&#8315;</th>
+            <th class="num">Nilai preferensi</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @ranking_results.each do |result| %>
+            <tr class="<%= "row--highlight" if result == @my_result %>">
+              <td><span class="rank rank--<%= result.rank %>"><%= result.award_label %></span></td>
+              <td class="mono"><%= result.participant.alternative_code %></td>
+              <td><%= result.participant.name %></td>
+              <td><%= result.participant.department.presence || "-" %></td>
+              <td class="num"><%= decimal4(result.d_positive) %></td>
+              <td class="num"><%= decimal4(result.d_negative) %></td>
+              <td class="num"><strong><%= decimal4(result.preference_value) %></strong></td>
+              <td>
+                <div class="cell-actions">
+                  <% if runs_topsis? || result == @my_result %>
+                    <%= link_to "Detail skor", score_path(result.participant), class: "btn btn--ghost btn--sm" %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
