@@ -9,6 +9,8 @@
     </p>
   </div>
   <div class="page-head__actions">
+    <%= link_to "Cetak PDF", event_report_path(@event, @topsis_run, format: :pdf), class: "btn btn--ghost" %>
+    <%= link_to "Export Excel", event_report_path(@event, @topsis_run, format: :xlsx), class: "btn btn--ghost" %>
     <%= link_to "Papan peringkat", event_leaderboard_path(@event), class: "btn" %>
     <%= link_to "Riwayat", event_topsis_runs_path(@event), class: "btn btn--ghost" %>
   </div>

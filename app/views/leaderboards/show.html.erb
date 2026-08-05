@@ -12,6 +12,8 @@
   </div>
   <% if @topsis_run && runs_topsis? %>
     <div class="page-head__actions">
+      <%= link_to "Cetak PDF", event_report_path(@event, @topsis_run, format: :pdf), class: "btn btn--ghost" %>
+      <%= link_to "Export Excel", event_report_path(@event, @topsis_run, format: :xlsx), class: "btn btn--ghost" %>
       <%= link_to "Rincian komputasi", event_topsis_run_path(@event, @topsis_run), class: "btn btn--ghost" %>
       <%= button_to "Hitung ulang", event_topsis_runs_path(@event), class: "btn" %>
     </div>
