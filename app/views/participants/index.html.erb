@@ -6,6 +6,7 @@
     <p>UC-04 &middot; <%= @event.name %> &middot; <%= @participants.size %> alternatif penilaian.</p>
   </div>
   <div class="page-head__actions">
+    <%= link_to "Import log aktivitas", new_event_activity_log_import_path(@event), class: "btn btn--ghost" %>
     <%= link_to "Tambah peserta", new_event_participant_path(@event), class: "btn" %>
   </div>
 </div>

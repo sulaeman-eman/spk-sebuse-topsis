@@ -1,0 +1,153 @@
+<% content_for :title, "Import Log Aktivitas" %>
+
+<div class="page-head">
+  <div>
+    <h1>Import Log Aktivitas</h1>
+    <p>UC-05 &middot; Unggah berkas rekap aktivitas fisik peserta dari medicalrjbb.com, Strava, atau Timestamp.</p>
+  </div>
+  <div class="page-head__actions">
+    <%= link_to "Unduh template CSV", template_event_activity_log_imports_path(@event), class: "btn btn--ghost" %>
+  </div>
+</div>
+
+<% if @errors.present? %>
+  <div class="errors">
+    <strong><%= @errors.size %> baris tidak memenuhi ketentuan, seluruh berkas dibatalkan:</strong>
+    <ul>
+      <% @errors.first(25).each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+    <% if @errors.size > 25 %>
+      <p>Dan <%= @errors.size - 25 %> baris lainnya.</p>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="card">
+  <h2>Unggah berkas</h2>
+  <p class="card__note">
+    Format yang didukung: CSV, XLSX, dan XLS. Peserta dicocokkan melalui kolom NIP,
+    sehingga satu berkas dapat memuat data seluruh peserta sekaligus.
+  </p>
+
+  <%= form_with url: event_activity_log_imports_path(@event), multipart: true, class: "form" do |form| %>
+    <div class="field">
+      <%= form.label :file, "Berkas rekap log aktivitas" %>
+      <%= form.file_field :file, accept: ".csv,.xlsx,.xls", required: true %>
+      <div class="field__hint">Maksimal 5.000 baris per unggahan.</div>
+    </div>
+
+    <div class="form__actions">
+      <%= form.submit "Import Data", class: "btn" %>
+      <%= link_to "Batal", event_participants_path(@event), class: "btn btn--ghost" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="card">
+  <h2>Ketentuan kolom</h2>
+  <p class="card__note">
+    Baris pertama berkas wajib memuat nama kolom. Empat kolom pertama bersifat wajib.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Kolom</th><th>Wajib</th><th>Keterangan</th><th>Contoh</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">nip</td>
+          <td><span class="badge badge--bad">Wajib</span></td>
+          <td>NIP peserta, harus sudah terdaftar pada event ini</td>
+          <td class="mono">CSU-0001</td>
+        </tr>
+        <tr>
+          <td class="mono">tanggal</td>
+          <td><span class="badge badge--bad">Wajib</span></td>
+          <td>Tanggal aktivitas, format YYYY-MM-DD</td>
+          <td class="mono">2026-03-02</td>
+        </tr>
+        <tr>
+          <td class="mono">jenis</td>
+          <td><span class="badge badge--bad">Wajib</span></td>
+          <td><span class="mono">cardio</span>, <span class="mono">strength</span>, <span class="mono">long_run</span>, atau <span class="mono">fun_sport</span></td>
+          <td class="mono">cardio</td>
+        </tr>
+        <tr>
+          <td class="mono">poin</td>
+          <td><span class="badge badge--bad">Wajib</span></td>
+          <td>Poin aktivitas. Cardio dan strength 2 poin per sesi, fun sports 1 poin</td>
+          <td class="mono">2</td>
+        </tr>
+        <tr>
+          <td class="mono">jarak_km</td>
+          <td><span class="badge">Opsional</span></td>
+          <td>Wajib diisi untuk Long Run agar ketuntasannya terhitung</td>
+          <td class="mono">10.5</td>
+        </tr>
+        <tr>
+          <td class="mono">tautan_bukti</td>
+          <td><span class="badge">Opsional</span></td>
+          <td>Tautan Strava atau foto Timestamp</td>
+          <td class="mono">https://...</td>
+        </tr>
+        <tr>
+          <td class="mono">bukti_valid</td>
+          <td><span class="badge">Opsional</span></td>
+          <td>Penilaian panitia atas bukti. Diisi <span class="mono">ya</span> atau <span class="mono">tidak</span></td>
+          <td class="mono">ya</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card__head">
+    <h2>Riwayat impor</h2>
+    <span class="badge"><%= @batches.size %> batch</span>
+  </div>
+
+  <% if @batches.empty? %>
+    <div class="empty">
+      <p>Belum ada berkas yang diimpor untuk event ini.</p>
+    </div>
+  <% else %>
+    <p class="card__note">
+      Setiap unggahan tercatat sebagai satu batch. Batch yang salah dapat dibatalkan
+      utuh tanpa mengganggu data dari unggahan lain.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Waktu impor</th>
+            <th class="num">Jumlah baris</th>
+            <th>Rentang tanggal aktivitas</th>
+            <th>Kode batch</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @batches.each do |batch| %>
+            <tr>
+              <td><%= l batch[:at], format: :long %></td>
+              <td class="num"><%= batch[:rows] %></td>
+              <td><%= l batch[:from], format: :short %> &ndash; <%= l batch[:to], format: :short %></td>
+              <td class="mono"><%= batch[:id].first(8) %></td>
+              <td>
+                <div class="cell-actions">
+                  <%= button_to "Batalkan batch",
+                        event_activity_log_import_path(@event, batch[:id]), method: :delete,
+                        class: "btn btn--danger btn--sm",
+                        form: { data: { turbo_confirm: "Hapus #{batch[:rows]} baris dari batch ini?" } } %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

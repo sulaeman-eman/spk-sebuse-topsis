@@ -25,9 +25,17 @@ Rails.application.routes.draw do
 
     # UC-08 Lihat Papan Peringkat
     resource :leaderboard, only: %i[show]
+
+    # UC-05 Import Log Activities
+    resources :activity_log_imports, only: %i[new create destroy], path: "impor-log" do
+      get :template, on: :collection
+    end
+
+    # UC-10 Cetak Laporan Peringkat
+    resources :reports, only: %i[show], path: "laporan"
   end
 
-  # Input log aktivitas peserta (manual; import berkas menyusul di UC-05)
+  # Input log aktivitas peserta secara manual per baris
   resources :participants, only: [] do
     resources :activity_logs, only: %i[index new create destroy]
   end
