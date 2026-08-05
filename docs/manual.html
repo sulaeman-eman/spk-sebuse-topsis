@@ -44,8 +44,8 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <hr>
 <h2>A. Ruang Lingkup Dokumen</h2>
 <p>Dokumen ini mencakup:</p>
-<ol><li>Kebutuhan perangkat lunak dan cara pemasangan.</li><li>Pembagian hak akses tiga aktor sistem.</li><li>Panduan penggunaan setiap use case (UC-01 sampai UC-09).</li><li>Rujukan aturan penilaian sepuluh kriteria beserta rumus konversinya.</li><li>Penanganan masalah yang umum ditemui.</li></ol>
-<p>Dokumen ini tidak mencakup fitur impor berkas rekap (UC-05 unggah berkas) dan cetak laporan (UC-10), karena kedua fitur tersebut berada di luar cakupan purwarupa yang telah diselesaikan.</p>
+<ol><li>Kebutuhan perangkat lunak dan cara pemasangan.</li><li>Pembagian hak akses tiga aktor sistem.</li><li>Panduan penggunaan setiap use case (UC-01 sampai UC-10).</li><li>Rujukan aturan penilaian sepuluh kriteria beserta rumus konversinya.</li><li>Penanganan masalah yang umum ditemui.</li></ol>
+<p>Seluruh use case UC-01 sampai UC-10 telah tersedia pada purwarupa ini.</p>
 <hr>
 <h2>B. Kebutuhan Sistem</h2>
 <h3>1. Perangkat lunak</h3>
@@ -71,12 +71,12 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <hr>
 <h2>D. Akun dan Hak Akses</h2>
 <p>Tiga aktor sistem sesuai use case diagram, dengan kata sandi awal <code>sebuse2026</code> untuk seluruh akun contoh:</p>
-<table><thead><tr><th>Aktor</th><th>Alamat email</th><th>Kewenangan</th></tr></thead><tbody><tr><td>Super Admin</td><td><code>superadmin@cahayasuarautama.co.id</code></td><td>Mengelola akun pengguna (UC-02) dan bobot kriteria (UC-03), serta seluruh kewenangan Admin Panitia</td></tr><tr><td>Admin Panitia</td><td><code>panitia@cahayasuarautama.co.id</code></td><td>Mengelola peserta (UC-04), mencatat log aktivitas, menjalankan pre-processing (UC-06) dan perhitungan TOPSIS (UC-07)</td></tr><tr><td>Peserta</td><td><code>peserta@cahayasuarautama.co.id</code></td><td>Melihat papan peringkat (UC-08) dan rincian skor pribadi (UC-09)</td></tr></tbody></table>
+<table><thead><tr><th>Aktor</th><th>Alamat email</th><th>Kewenangan</th></tr></thead><tbody><tr><td>Super Admin</td><td><code>superadmin@cahayasuarautama.co.id</code></td><td>Mengelola akun pengguna (UC-02) dan bobot kriteria (UC-03), serta seluruh kewenangan Admin Panitia</td></tr><tr><td>Admin Panitia</td><td><code>panitia@cahayasuarautama.co.id</code></td><td>Mengelola peserta (UC-04), mengimpor dan mencatat log aktivitas (UC-05), menjalankan pre-processing (UC-06) dan perhitungan TOPSIS (UC-07), mencetak laporan (UC-10)</td></tr><tr><td>Peserta</td><td><code>peserta@cahayasuarautama.co.id</code></td><td>Melihat papan peringkat (UC-08) dan rincian skor pribadi (UC-09)</td></tr></tbody></table>
 <p>Pembatasan hak akses diterapkan pada tingkat pengendali (controller). Pengguna yang membuka halaman di luar kewenangannya akan dialihkan ke dasbor beserta pesan peringatan.</p>
 <hr>
 <h2>E. Alur Kerja Sistem</h2>
 <p>Urutan penggunaan sistem oleh panitia mengikuti alur berikut:</p>
-<ol><li><strong>Kelola Kriteria dan Bobot</strong> (UC-03) — memastikan akumulasi bobot tepat 100%.</li><li><strong>Kelola Data Peserta</strong> (UC-04) — mendaftarkan karyawan sebagai alternatif penilaian.</li><li><strong>Catat Log Aktivitas</strong> — memasukkan data mentah pencapaian olahraga peserta.</li><li><strong>Pre-processing Data</strong> (UC-06) — mengonversi log mentah menjadi matriks keputusan (X) berskala 0–100.</li><li><strong>Hitung Metode TOPSIS</strong> (UC-07) — menghasilkan nilai preferensi dan peringkat.</li><li><strong>Papan Peringkat</strong> (UC-08) — mengumumkan hasil kepada seluruh peserta.</li></ol>
+<ol><li><strong>Kelola Kriteria dan Bobot</strong> (UC-03) — memastikan akumulasi bobot tepat 100%.</li><li><strong>Kelola Data Peserta</strong> (UC-04) — mendaftarkan karyawan sebagai alternatif penilaian.</li><li><strong>Memasukkan log aktivitas</strong> — melalui unggahan berkas rekap (UC-05) untuk data banyak peserta sekaligus, atau pencatatan manual per baris untuk penyesuaian.</li><li><strong>Pre-processing Data</strong> (UC-06) — mengonversi log mentah menjadi matriks keputusan (X) berskala 0–100.</li><li><strong>Hitung Metode TOPSIS</strong> (UC-07) — menghasilkan nilai preferensi dan peringkat.</li><li><strong>Papan Peringkat</strong> (UC-08) — mengumumkan hasil kepada seluruh peserta.</li><li><strong>Cetak Laporan</strong> (UC-10) — mengunduh rekapitulasi resmi berformat PDF atau Excel.</li></ol>
 <p>Langkah 4 wajib mendahului langkah 5. Apabila perhitungan TOPSIS dijalankan tanpa matriks keputusan, sistem menolak dan mengarahkan pengguna kembali ke halaman pre-processing.</p>
 <hr>
 <h2>F. Panduan Penggunaan</h2>
@@ -120,60 +120,85 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <figure><img src="gambar/05-data-peserta.png" alt="Kelola data peserta"></figure>
 <p><strong>Gambar 4. 28</strong> Tampilan Kelola Data Peserta (UC-04)</p>
 <hr>
-<h3>6. Pencatatan Log Aktivitas</h3>
+<h3>6. UC-05 Import Log Activities</h3>
+<p><strong>Aktor:</strong> Admin Panitia</p>
+<p><strong>Langkah:</strong></p>
+<ol><li>Pilih menu <strong>Impor Log</strong>.</li><li>Tekan <strong>Unduh template CSV</strong> untuk memperoleh contoh berkas beserta nama kolomnya.</li><li>Isi berkas mengikuti ketentuan kolom, lalu simpan sebagai CSV, XLSX, atau XLS.</li><li>Tekan <strong>Choose File</strong> dan pilih berkas yang telah disiapkan.</li><li>Tekan <strong>Import Data</strong>.</li></ol>
+<p><strong>Hasil:</strong> Sistem memeriksa kelengkapan nama kolom, lalu memvalidasi setiap baris. Bila seluruh baris memenuhi ketentuan, data disimpan sekaligus dan tercatat sebagai satu batch. Bila ada satu baris yang tidak memenuhi ketentuan, seluruh berkas dibatalkan dan sistem menampilkan nomor baris beserta alasan penolakannya.</p>
+<p>Pembatalan menyeluruh ini disengaja: panitia tidak perlu menebak sebagian data mana yang sudah masuk sebelum memperbaiki berkasnya.</p>
+<p><strong>Ketentuan kolom.</strong> Baris pertama berkas wajib memuat nama kolom. Peserta dicocokkan melalui kolom NIP, sehingga satu berkas dapat memuat data seluruh peserta sekaligus. Batas satu unggahan adalah 5.000 baris.</p>
+<table><thead><tr><th>Kolom</th><th>Sifat</th><th>Keterangan</th><th>Contoh</th></tr></thead><tbody><tr><td><code>nip</code></td><td>wajib</td><td>NIP peserta, harus sudah terdaftar pada event</td><td><code>CSU-0001</code></td></tr><tr><td><code>tanggal</code></td><td>wajib</td><td>Tanggal aktivitas, format YYYY-MM-DD</td><td><code>2026-03-02</code></td></tr><tr><td><code>jenis</code></td><td>wajib</td><td><code>cardio</code>, <code>strength</code>, <code>long_run</code>, atau <code>fun_sport</code></td><td><code>cardio</code></td></tr><tr><td><code>poin</code></td><td>wajib</td><td>Poin aktivitas</td><td><code>2</code></td></tr><tr><td><code>jarak_km</code></td><td>opsional</td><td>Wajib untuk Long Run agar ketuntasannya terhitung</td><td><code>10.5</code></td></tr><tr><td><code>tautan_bukti</code></td><td>opsional</td><td>Tautan Strava atau foto Timestamp</td><td><code>https://...</code></td></tr><tr><td><code>bukti_valid</code></td><td>opsional</td><td>Penilaian panitia atas bukti, diisi <code>ya</code> atau <code>tidak</code></td><td><code>ya</code></td></tr></tbody></table>
+<p>Penulisan jenis aktivitas tidak membedakan huruf besar dan kecil, serta menerima beberapa bentuk umum seperti <code>Kardio</code>, <code>Long Run</code>, dan <code>Fun Sports</code>.</p>
+<p><strong>Pembatalan batch.</strong> Setiap unggahan tercatat pada panel <strong>Riwayat impor</strong> beserta jumlah baris dan rentang tanggalnya. Tombol <strong>Batalkan batch</strong> menghapus seluruh baris dari satu unggahan tanpa mengganggu data dari unggahan lain.</p>
+<figure><img src="gambar/13-impor-log.png" alt="Import log aktivitas"></figure>
+<p><strong>Gambar 4. 29</strong> Tampilan Import Log Activities (UC-05)</p>
+<hr>
+<h3>7. Pencatatan Log Aktivitas secara Manual</h3>
 <p><strong>Aktor:</strong> Admin Panitia</p>
 <p><strong>Langkah:</strong></p>
 <ol><li>Pada daftar peserta, tekan <strong>Log aktivitas</strong> pada baris peserta yang dimaksud.</li><li>Tekan <strong>Catat aktivitas</strong>.</li><li>Isi tanggal, jenis aktivitas, poin, jarak (untuk Long Run), dan tautan bukti.</li><li>Tandai <strong>Bukti dinyatakan valid oleh panitia</strong> apabila bukti memenuhi syarat.</li><li>Tekan <strong>Simpan log</strong>.</li></ol>
 <p><strong>Hasil:</strong> Baris log tersimpan sebagai data mentah. Hari yang total poinnya melampaui kuota harian ditandai pada daftar, dan kelebihannya akan dipangkas otomatis saat pre-processing dijalankan.</p>
 <figure><img src="gambar/12-log-aktivitas.png" alt="Log aktivitas peserta"></figure>
-<p><strong>Gambar 4. 29</strong> Tampilan Pencatatan Log Aktivitas Peserta</p>
+<p><strong>Gambar 4. 30</strong> Tampilan Pencatatan Log Aktivitas Peserta</p>
 <hr>
-<h3>7. UC-06 Pre-processing Data</h3>
+<h3>8. UC-06 Pre-processing Data</h3>
 <p><strong>Aktor:</strong> Admin Panitia</p>
 <p><strong>Langkah:</strong></p>
 <ol><li>Pilih menu <strong>Pre-processing</strong>.</li><li>Periksa panel <strong>Aturan yang diterapkan</strong> untuk memastikan parameter regulasi sudah sesuai.</li><li>Tekan <strong>Jalankan pre-processing</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem memangkas kuota poin harian yang melampaui batas, mengonversi setiap kriteria ke skala 0–100 menggunakan rumusnya masing-masing, menghitung penalti pelanggaran aturan beruntun, lalu menyimpan hasilnya sebagai matriks keputusan (X). Panel bawah halaman menampilkan pratinjau matriks tersebut.</p>
 <p>Nilai kriteria C7 tidak ditimpa oleh proses ini karena bersumber dari pengukuran fisik oleh panitia, bukan dari log olahraga.</p>
 <figure><img src="gambar/06-preprocessing.png" alt="Pre-processing data"></figure>
-<p><strong>Gambar 4. 30</strong> Tampilan Pre-processing Data dan Matriks Keputusan (UC-06)</p>
+<p><strong>Gambar 4. 31</strong> Tampilan Pre-processing Data dan Matriks Keputusan (UC-06)</p>
 <hr>
-<h3>8. UC-07 Hitung Metode TOPSIS</h3>
+<h3>9. UC-07 Hitung Metode TOPSIS</h3>
 <p><strong>Aktor:</strong> Admin Panitia</p>
 <p><strong>Langkah:</strong></p>
 <ol><li>Pilih menu <strong>TOPSIS</strong>.</li><li>Tekan <strong>Hitung TOPSIS</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem menyusun matriks keputusan dari basis data, menjalankan seluruh tahapan TOPSIS, lalu menyimpan hasilnya ke tabel <code>topsis_runs</code> dan <code>ranking_results</code>. Pengguna langsung diarahkan ke halaman rincian komputasi.</p>
 <p>Setiap eksekusi tercatat beserta waktu dan pelaksananya, sehingga riwayat perhitungan dapat ditelusuri.</p>
 <figure><img src="gambar/07-riwayat-topsis.png" alt="Riwayat perhitungan TOPSIS"></figure>
-<p><strong>Gambar 4. 31</strong> Tampilan Riwayat Perhitungan TOPSIS (UC-07)</p>
+<p><strong>Gambar 4. 32</strong> Tampilan Riwayat Perhitungan TOPSIS (UC-07)</p>
 <hr>
-<h3>9. Rincian Komputasi TOPSIS</h3>
+<h3>10. Rincian Komputasi TOPSIS</h3>
 <p><strong>Aktor:</strong> Admin Panitia</p>
 <p>Halaman ini menampilkan keenam tahapan perhitungan secara berurutan beserta rumus yang digunakan:</p>
 <table><thead><tr><th>Langkah</th><th>Keluaran</th><th>Rumus</th></tr></thead><tbody><tr><td>1</td><td>Matriks keputusan (X)</td><td>hasil pre-processing skala 0–100</td></tr><tr><td>2</td><td>Matriks ternormalisasi (R)</td><td>rᵢⱼ = xᵢⱼ / √(Σ xᵢⱼ²)</td></tr><tr><td>3</td><td>Matriks ternormalisasi terbobot (Y)</td><td>yᵢⱼ = wⱼ × rᵢⱼ</td></tr><tr><td>4</td><td>Solusi ideal positif dan negatif</td><td>A⁺ = maks kolom Y, A⁻ = min kolom Y</td></tr><tr><td>5</td><td>Jarak Euclidean</td><td>D⁺ᵢ = √(Σ (yᵢⱼ − y⁺ⱼ)²), D⁻ᵢ = √(Σ (yᵢⱼ − y⁻ⱼ)²)</td></tr><tr><td>6</td><td>Nilai preferensi</td><td>Vᵢ = D⁻ᵢ / (D⁺ᵢ + D⁻ᵢ)</td></tr></tbody></table>
 <p>Seluruh langkah disimpan sebagai cuplikan (*snapshot*) pada saat eksekusi. Dengan demikian rincian perhitungan dapat ditampilkan tanpa menghitung ulang, dan hasil perhitungan lama tetap dapat diaudit walaupun bobot kriteria diubah setelahnya. Bobot yang dipakai saat eksekusi ditampilkan sebagai penanda pada langkah ketiga.</p>
 <figure><img src="gambar/08-rincian-komputasi.png" alt="Rincian komputasi TOPSIS"></figure>
-<p><strong>Gambar 4. 32</strong> Tampilan Rincian Komputasi Metode TOPSIS (UC-07)</p>
+<p><strong>Gambar 4. 33</strong> Tampilan Rincian Komputasi Metode TOPSIS (UC-07)</p>
 <hr>
-<h3>10. UC-08 Lihat Papan Peringkat</h3>
+<h3>11. UC-08 Lihat Papan Peringkat</h3>
 <p><strong>Aktor:</strong> Admin Panitia, Peserta</p>
 <p><strong>Langkah:</strong></p>
 <ol><li>Pilih menu <strong>Peringkat</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem mengambil hasil perhitungan terakhir dan menampilkan seluruh peserta terurut dari nilai preferensi tertinggi ke terendah, lengkap dengan jarak solusi ideal positif dan negatif sebagai bentuk transparansi.</p>
 <p>Halaman ini terbuka bagi seluruh peran, sesuai tujuan penelitian dalam menegakkan transparansi hasil kompetisi.</p>
 <figure><img src="gambar/09-papan-peringkat.png" alt="Papan peringkat"></figure>
-<p><strong>Gambar 4. 33</strong> Tampilan Papan Peringkat (UC-08)</p>
+<p><strong>Gambar 4. 34</strong> Tampilan Papan Peringkat (UC-08)</p>
 <p>Bagi pengguna dengan peran Peserta, sistem menambahkan panel ringkasan peringkat pribadi di bagian atas halaman dan menyorot baris peserta yang bersangkutan pada tabel.</p>
 <figure><img src="gambar/10-peringkat-peserta.png" alt="Papan peringkat dari sudut pandang peserta"></figure>
-<p><strong>Gambar 4. 34</strong> Tampilan Papan Peringkat pada Akun Peserta (UC-08)</p>
+<p><strong>Gambar 4. 35</strong> Tampilan Papan Peringkat pada Akun Peserta (UC-08)</p>
 <hr>
-<h3>11. UC-09 Lihat Detail Skor Individu</h3>
+<h3>12. UC-09 Lihat Detail Skor Individu</h3>
 <p><strong>Aktor:</strong> Peserta</p>
 <p><strong>Langkah:</strong></p>
 <ol><li>Pada papan peringkat atau dasbor, tekan <strong>Detail skor</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem menampilkan rincian capaian sepuluh kriteria milik peserta beserta bobot, batang capaian, dan catatan evaluasi setiap kriteria. Panel atas menampilkan peringkat, nilai preferensi, serta jarak terhadap kedua solusi ideal.</p>
 <p>Peserta hanya dapat membuka rincian skor miliknya sendiri. Admin Panitia dan Super Admin dapat membuka rincian skor peserta mana pun untuk keperluan verifikasi.</p>
 <figure><img src="gambar/11-detail-skor.png" alt="Detail skor individu"></figure>
-<p><strong>Gambar 4. 35</strong> Tampilan Detail Skor Individu (UC-09)</p>
+<p><strong>Gambar 4. 36</strong> Tampilan Detail Skor Individu (UC-09)</p>
+<hr>
+<h3>13. UC-10 Cetak Laporan Peringkat</h3>
+<p><strong>Aktor:</strong> Admin Panitia</p>
+<p><strong>Langkah:</strong></p>
+<ol><li>Buka <strong>Papan Peringkat</strong> atau halaman <strong>Rincian Komputasi</strong>.</li><li>Tekan <strong>Cetak PDF</strong> untuk dokumen resmi, atau <strong>Export Excel</strong> untuk berkas yang dapat diolah lebih lanjut.</li></ol>
+<p><strong>Hasil:</strong> Sistem menyusun laporan dari hasil perhitungan yang tersimpan, lalu mengunduhkan berkasnya ke perangkat pengguna. Nama berkas memuat nama event dan waktu perhitungan, misalnya <code>laporan-peringkat-sebuse-2026-20260806-0403.pdf</code>, sehingga laporan dari perhitungan berbeda tidak saling menimpa.</p>
+<p><strong>Isi laporan PDF.</strong> Satu halaman A4 memuat kop nama perusahaan, judul laporan, keterangan event, tabel hasil pemeringkatan beserta jarak solusi ideal, tabel kriteria beserta bobot yang tercatat saat perhitungan, serta ruang tanda tangan ketua panitia.</p>
+<p><strong>Isi laporan Excel.</strong> Berkas memuat tiga lembar kerja:</p>
+<table><thead><tr><th>Lembar</th><th>Isi</th></tr></thead><tbody><tr><td>Peringkat</td><td>Keterangan event dan tabel hasil pemeringkatan</td></tr><tr><td>Matriks Keputusan</td><td>Matriks keputusan (X) serta solusi ideal positif dan negatif</td></tr><tr><td>Kriteria</td><td>Sepuluh kriteria beserta jenis dan bobotnya</td></tr></tbody></table>
+<p>Lembar Matriks Keputusan disertakan agar hasil laporan dapat diperiksa ulang secara manual, tidak hanya dipercaya apa adanya.</p>
+<figure><img src="gambar/14-laporan-pdf.png" alt="Laporan peringkat berformat PDF"></figure>
+<p><strong>Gambar 4. 37</strong> Keluaran Laporan Pemeringkatan Berformat PDF (UC-10)</p>
 <hr>
 <h2>G. Rujukan Aturan Penilaian</h2>
 <p>Sepuluh kriteria penilaian beserta rumus konversinya ke skala 0–100. Seluruh kriteria bertipe *benefit*, yaitu semakin tinggi nilainya semakin baik.</p>
@@ -183,14 +208,14 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p>Seluruh parameter di atas tersimpan pada tingkat event dan dapat diubah melalui halaman <strong>Event › Ubah aturan</strong> tanpa mengubah kode program.</p>
 <hr>
 <h2>H. Penanganan Masalah</h2>
-<table><thead><tr><th>Gejala</th><th>Penyebab</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Peringatan "Total bobot kriteria belum 100%" saat menghitung TOPSIS</td><td>Akumulasi bobot kriteria tidak tepat 1,00</td><td>Buka menu <strong>Kriteria</strong>, sesuaikan bobot hingga totalnya 100%, lalu simpan</td></tr><tr><td>Peringatan "Belum ada matriks keputusan"</td><td>Pre-processing belum dijalankan</td><td>Buka menu <strong>Pre-processing</strong> dan tekan <strong>Jalankan pre-processing</strong></td></tr><tr><td>Peserta tidak muncul pada hasil perhitungan</td><td>Skor kriteria peserta belum lengkap</td><td>Jalankan pre-processing kembali; peserta dengan baris tidak lengkap sengaja dilewati agar tidak merusak matriks</td></tr><tr><td>Peserta tidak dapat membuka rincian skornya</td><td>Akun pengguna belum ditautkan ke data peserta</td><td>Buka <strong>Peserta › Ubah</strong>, pilih akun pada kolom <strong>Akun peserta</strong></td></tr><tr><td>Pesan "Anda tidak memiliki hak akses"</td><td>Halaman berada di luar kewenangan peran</td><td>Masuk menggunakan akun dengan peran yang sesuai</td></tr><tr><td>Nilai C7 seluruh peserta bernilai 0</td><td>Nilai C7 belum diisi panitia</td><td>Isi nilai C7 secara manual; nilai ini memang tidak dihasilkan oleh pre-processing</td></tr><tr><td>Galat <code>PG::ConnectionBad</code> saat menjalankan aplikasi</td><td>Layanan PostgreSQL belum berjalan</td><td>Jalankan layanan PostgreSQL, lalu ulangi perintah</td></tr></tbody></table>
+<table><thead><tr><th>Gejala</th><th>Penyebab</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Peringatan "Total bobot kriteria belum 100%" saat menghitung TOPSIS</td><td>Akumulasi bobot kriteria tidak tepat 1,00</td><td>Buka menu <strong>Kriteria</strong>, sesuaikan bobot hingga totalnya 100%, lalu simpan</td></tr><tr><td>Peringatan "Belum ada matriks keputusan"</td><td>Pre-processing belum dijalankan</td><td>Buka menu <strong>Pre-processing</strong> dan tekan <strong>Jalankan pre-processing</strong></td></tr><tr><td>Peserta tidak muncul pada hasil perhitungan</td><td>Skor kriteria peserta belum lengkap</td><td>Jalankan pre-processing kembali; peserta dengan baris tidak lengkap sengaja dilewati agar tidak merusak matriks</td></tr><tr><td>Peserta tidak dapat membuka rincian skornya</td><td>Akun pengguna belum ditautkan ke data peserta</td><td>Buka <strong>Peserta › Ubah</strong>, pilih akun pada kolom <strong>Akun peserta</strong></td></tr><tr><td>Pesan "Anda tidak memiliki hak akses"</td><td>Halaman berada di luar kewenangan peran</td><td>Masuk menggunakan akun dengan peran yang sesuai</td></tr><tr><td>Nilai C7 seluruh peserta bernilai 0</td><td>Nilai C7 belum diisi panitia</td><td>Isi nilai C7 secara manual; nilai ini memang tidak dihasilkan oleh pre-processing</td></tr><tr><td>Galat <code>PG::ConnectionBad</code> saat menjalankan aplikasi</td><td>Layanan PostgreSQL belum berjalan</td><td>Jalankan layanan PostgreSQL, lalu ulangi perintah</td></tr><tr><td>Impor ditolak dengan pesan "Kolom wajib belum lengkap"</td><td>Baris pertama berkas tidak memuat keempat nama kolom wajib</td><td>Unduh template CSV dan salin baris pertamanya</td></tr><tr><td>Impor ditolak dengan pesan "NIP ... tidak terdaftar"</td><td>NIP pada berkas belum didaftarkan sebagai peserta event ini</td><td>Daftarkan peserta melalui UC-04, atau perbaiki penulisan NIP pada berkas</td></tr><tr><td>Impor ditolak dengan pesan "tanggal ... tidak dikenali"</td><td>Kolom tanggal tidak berformat YYYY-MM-DD</td><td>Perbaiki format tanggal. Pada Excel, pastikan kolom bertipe Date atau Text yang benar</td></tr><tr><td>Impor ditolak dengan pesan "Format berkas ... tidak didukung"</td><td>Berkas bukan CSV, XLSX, atau XLS</td><td>Simpan ulang berkas ke salah satu format tersebut</td></tr><tr><td>Sebagian data terimpor ganda</td><td>Berkas yang sama diunggah dua kali</td><td>Batalkan salah satu batch melalui panel Riwayat impor</td></tr><tr><td>Tombol Cetak PDF tidak muncul</td><td>Perhitungan TOPSIS belum pernah dijalankan, atau akun berperan Peserta</td><td>Jalankan UC-07 lebih dahulu, dan gunakan akun Admin Panitia</td></tr></tbody></table>
 <hr>
 <h2>I. Bahan Siap Tempel untuk Laporan</h2>
 <h3>1. Usulan penempatan pada Bab IV</h3>
 <p>Tangkapan layar pada dokumen ini disarankan ditempatkan sebagai subbab baru <strong>C.5 Implementasi Antarmuka</strong>, yaitu setelah C.4 Diagram dan sebelum D. Kelebihan dan Kelemahan Penelitian.</p>
 <h3>2. Penomoran gambar</h3>
-<p>Penomoran <code>Gambar 4. 24</code> sampai <code>Gambar 4. 35</code> pada dokumen ini disusun dengan asumsi urutan gambar Bab IV sebagai berikut:</p>
-<table><thead><tr><th>Rentang</th><th>Isi</th></tr></thead><tbody><tr><td>Gambar 4. 1</td><td>Use Case Diagram (C.1)</td></tr><tr><td>Gambar 4. 2 – 4. 11</td><td>Activity Diagram UC-01 sampai UC-10 (C.2)</td></tr><tr><td>Gambar 4. 12 – 4. 21</td><td>Sequence Diagram UC-01 sampai UC-10 (C.3)</td></tr><tr><td>Gambar 4. 22 – 4. 23</td><td>Class Diagram dan ERD (C.4)</td></tr><tr><td>Gambar 4. 24 – 4. 35</td><td>Implementasi antarmuka (C.5, dokumen ini)</td></tr></tbody></table>
+<p>Penomoran <code>Gambar 4. 24</code> sampai <code>Gambar 4. 37</code> pada dokumen ini disusun dengan asumsi urutan gambar Bab IV sebagai berikut:</p>
+<table><thead><tr><th>Rentang</th><th>Isi</th></tr></thead><tbody><tr><td>Gambar 4. 1</td><td>Use Case Diagram (C.1)</td></tr><tr><td>Gambar 4. 2 – 4. 11</td><td>Activity Diagram UC-01 sampai UC-10 (C.2)</td></tr><tr><td>Gambar 4. 12 – 4. 21</td><td>Sequence Diagram UC-01 sampai UC-10 (C.3)</td></tr><tr><td>Gambar 4. 22 – 4. 23</td><td>Class Diagram dan ERD (C.4)</td></tr><tr><td>Gambar 4. 24 – 4. 37</td><td>Implementasi antarmuka (C.5, dokumen ini)</td></tr></tbody></table>
 <p>Apabila jumlah gambar pada C.4 berbeda, penomoran pada dokumen ini perlu digeser sesuai keadaan sebenarnya.</p>
 <h3>3. Entri Daftar Gambar</h3>
 <pre><code>Gambar 4. 24 Tampilan Halaman Login (UC-01)
@@ -198,18 +223,20 @@ Gambar 4. 25 Tampilan Dasbor Admin Panitia
 Gambar 4. 26 Tampilan Kelola Data Pengguna (UC-02)
 Gambar 4. 27 Tampilan Kelola Kriteria dan Bobot (UC-03)
 Gambar 4. 28 Tampilan Kelola Data Peserta (UC-04)
-Gambar 4. 29 Tampilan Pencatatan Log Aktivitas Peserta
-Gambar 4. 30 Tampilan Pre-processing Data dan Matriks Keputusan (UC-06)
-Gambar 4. 31 Tampilan Riwayat Perhitungan TOPSIS (UC-07)
-Gambar 4. 32 Tampilan Rincian Komputasi Metode TOPSIS (UC-07)
-Gambar 4. 33 Tampilan Papan Peringkat (UC-08)
-Gambar 4. 34 Tampilan Papan Peringkat pada Akun Peserta (UC-08)
-Gambar 4. 35 Tampilan Detail Skor Individu (UC-09)</code></pre>
+Gambar 4. 29 Tampilan Import Log Activities (UC-05)
+Gambar 4. 30 Tampilan Pencatatan Log Aktivitas Peserta
+Gambar 4. 31 Tampilan Pre-processing Data dan Matriks Keputusan (UC-06)
+Gambar 4. 32 Tampilan Riwayat Perhitungan TOPSIS (UC-07)
+Gambar 4. 33 Tampilan Rincian Komputasi Metode TOPSIS (UC-07)
+Gambar 4. 34 Tampilan Papan Peringkat (UC-08)
+Gambar 4. 35 Tampilan Papan Peringkat pada Akun Peserta (UC-08)
+Gambar 4. 36 Tampilan Detail Skor Individu (UC-09)
+Gambar 4. 37 Keluaran Laporan Pemeringkatan Berformat PDF (UC-10)</code></pre>
 <h3>4. Berkas gambar</h3>
 <p>Seluruh berkas tangkapan layar tersimpan pada <code>docs/gambar/</code> dengan penamaan berurutan sesuai pembahasan pada dokumen ini:</p>
-<table><thead><tr><th>Berkas</th><th>Gambar</th></tr></thead><tbody><tr><td><code>01-login.png</code></td><td>Gambar 4. 24</td></tr><tr><td><code>02-dasbor-panitia.png</code></td><td>Gambar 4. 25</td></tr><tr><td><code>04-data-pengguna.png</code></td><td>Gambar 4. 26</td></tr><tr><td><code>03-kriteria-bobot.png</code></td><td>Gambar 4. 27</td></tr><tr><td><code>05-data-peserta.png</code></td><td>Gambar 4. 28</td></tr><tr><td><code>12-log-aktivitas.png</code></td><td>Gambar 4. 29</td></tr><tr><td><code>06-preprocessing.png</code></td><td>Gambar 4. 30</td></tr><tr><td><code>07-riwayat-topsis.png</code></td><td>Gambar 4. 31</td></tr><tr><td><code>08-rincian-komputasi.png</code></td><td>Gambar 4. 32</td></tr><tr><td><code>09-papan-peringkat.png</code></td><td>Gambar 4. 33</td></tr><tr><td><code>10-peringkat-peserta.png</code></td><td>Gambar 4. 34</td></tr><tr><td><code>11-detail-skor.png</code></td><td>Gambar 4. 35</td></tr></tbody></table>
+<table><thead><tr><th>Berkas</th><th>Gambar</th></tr></thead><tbody><tr><td><code>01-login.png</code></td><td>Gambar 4. 24</td></tr><tr><td><code>02-dasbor-panitia.png</code></td><td>Gambar 4. 25</td></tr><tr><td><code>04-data-pengguna.png</code></td><td>Gambar 4. 26</td></tr><tr><td><code>03-kriteria-bobot.png</code></td><td>Gambar 4. 27</td></tr><tr><td><code>05-data-peserta.png</code></td><td>Gambar 4. 28</td></tr><tr><td><code>13-impor-log.png</code></td><td>Gambar 4. 29</td></tr><tr><td><code>12-log-aktivitas.png</code></td><td>Gambar 4. 30</td></tr><tr><td><code>06-preprocessing.png</code></td><td>Gambar 4. 31</td></tr><tr><td><code>07-riwayat-topsis.png</code></td><td>Gambar 4. 32</td></tr><tr><td><code>08-rincian-komputasi.png</code></td><td>Gambar 4. 33</td></tr><tr><td><code>09-papan-peringkat.png</code></td><td>Gambar 4. 34</td></tr><tr><td><code>10-peringkat-peserta.png</code></td><td>Gambar 4. 35</td></tr><tr><td><code>11-detail-skor.png</code></td><td>Gambar 4. 36</td></tr><tr><td><code>14-laporan-pdf.png</code></td><td>Gambar 4. 37</td></tr></tbody></table>
 <h3>5. Bukti kesesuaian perhitungan</h3>
-<p>Hasil perhitungan sistem pada Gambar 4. 32 dan Gambar 4. 33 sesuai dengan perhitungan manual pada Bab IV:</p>
+<p>Hasil perhitungan sistem pada Gambar 4. 33, Gambar 4. 34, dan Gambar 4. 37 sesuai dengan perhitungan manual pada Bab IV:</p>
 <table><thead><tr><th>Kode</th><th>Peserta</th><th>D⁺</th><th>D⁻</th><th>Vᵢ</th><th>Peringkat</th></tr></thead><tbody><tr><td>A5</td><td>Eka</td><td>0,0078</td><td>0,0696</td><td>0,8988</td><td>Juara 1</td></tr><tr><td>A2</td><td>Andi</td><td>0,0139</td><td>0,0623</td><td>0,8182</td><td>Juara 2</td></tr><tr><td>A1</td><td>Budi</td><td>0,0178</td><td>0,0570</td><td>0,7618</td><td>Juara 3</td></tr><tr><td>A3</td><td>Citra</td><td>0,0429</td><td>0,0330</td><td>0,4350</td><td>Peringkat 4</td></tr><tr><td>A4</td><td>Dedi</td><td>0,0709</td><td>0,0000</td><td>0,0000</td><td>Peringkat 5</td></tr></tbody></table>
 <p>Nilai di atas berlaku untuk konfigurasi bobot dengan C7 sebesar 5%, sehingga akumulasi seluruh bobot tepat 100% sesuai syarat UC-03.</p>
 <p>Kebenaran angka tersebut dikunci oleh pengujian otomatis pada <code>spec/services/topsis_engine_spec.rb</code>, yang membandingkan keluaran mesin perhitungan dengan angka perhitungan manual hingga empat angka desimal.</p>

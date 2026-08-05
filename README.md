@@ -63,6 +63,8 @@ solusi ideal, jarak Euclidean, dan nilai preferensi.
 app/services/topsis_engine.rb          kalkulasi TOPSIS, murni matematis
 app/services/preprocessing_engine.rb   konversi log mentah ke matriks keputusan
 app/services/topsis_run_creator.rb     jembatan basis data dengan mesin hitung
+app/services/activity_log_import.rb    pembacaan berkas rekap CSV dan Excel
+app/services/report_generator.rb       penyusun laporan PDF dan Excel
 docs/MANUAL_PENGGUNA.md                manual pengguna beserta tangkapan layar
 docs/Manual_Pengguna_SPK_SEBUSE.pdf    manual siap cetak
 ```
@@ -79,12 +81,12 @@ tanpa membuat satu pun record basis data.
 | UC-02 | Kelola Data Pengguna | selesai |
 | UC-03 | Kelola Kriteria dan Bobot | selesai |
 | UC-04 | Kelola Data Peserta | selesai |
-| UC-05 | Import Log Aktivitas | input manual selesai, unggah berkas belum |
+| UC-05 | Import Log Aktivitas | selesai (CSV, XLSX, XLS, dan input manual) |
 | UC-06 | Pre-processing Data | selesai |
 | UC-07 | Hitung Metode TOPSIS | selesai |
 | UC-08 | Lihat Papan Peringkat | selesai |
 | UC-09 | Lihat Detail Skor Individu | selesai |
-| UC-10 | Cetak Laporan Peringkat | belum |
+| UC-10 | Cetak Laporan Peringkat | selesai (PDF dan Excel) |
 
 ## Sepuluh kriteria penilaian
 
