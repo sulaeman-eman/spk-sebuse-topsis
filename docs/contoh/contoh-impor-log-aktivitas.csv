@@ -1,0 +1,6 @@
+nip,tanggal,jenis,poin,jarak_km,tautan_bukti,bukti_valid
+CSU-0006,2026-03-23,cardio,2,,https://medicalrjbb.com/logs/demo-1,ya
+CSU-0006,2026-03-24,strength,2,,https://medicalrjbb.com/logs/demo-2,ya
+CSU-0006,2026-03-25,cardio,2,,https://medicalrjbb.com/logs/demo-3,ya
+CSU-0006,2026-03-27,long_run,3,10.8,https://medicalrjbb.com/logs/demo-4,ya
+CSU-0006,2026-03-28,fun_sport,1,,,tidak

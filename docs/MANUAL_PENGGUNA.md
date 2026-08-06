@@ -9,17 +9,47 @@ lima peserta sebagaimana tercantum pada Bab IV.
 
 ---
 
+## Daftar Isi
+
+| Bagian | Isi |
+|---|---|
+| A | Ruang Lingkup Dokumen |
+| B | Kebutuhan Sistem |
+| C | Pemasangan dan Menjalankan Aplikasi |
+| D | Akun dan Hak Akses |
+| E | Alur Kerja Sistem |
+| F | Panduan Penggunaan, UC-01 sampai UC-10 |
+| G | Rujukan Aturan Penilaian |
+| H | Skenario Demonstrasi Sistem |
+| I | Penanganan Masalah |
+| J | Ringkasan Pengujian Otomatis |
+| K | Glosarium |
+| L | Bahan Siap Tempel untuk Laporan |
+
+---
+
 ## A. Ruang Lingkup Dokumen
 
 Dokumen ini mencakup:
 
 1. Kebutuhan perangkat lunak dan cara pemasangan.
-2. Pembagian hak akses tiga aktor sistem.
+2. Pembagian hak akses tiga aktor sistem beserta peta menunya.
 3. Panduan penggunaan setiap use case (UC-01 sampai UC-10).
 4. Rujukan aturan penilaian sepuluh kriteria beserta rumus konversinya.
-5. Penanganan masalah yang umum ditemui.
+5. Skenario demonstrasi sistem secara berurutan dari awal sampai peringkat akhir.
+6. Penanganan masalah yang umum ditemui.
+7. Ringkasan pengujian otomatis sebagai bukti kebenaran perhitungan.
+8. Glosarium istilah metode TOPSIS dan istilah sistem.
 
 Seluruh use case UC-01 sampai UC-10 telah tersedia pada purwarupa ini.
+
+### Dokumen terkait
+
+| Dokumen | Isi |
+|---|---|
+| `PERANCANGAN_BASIS_DATA.md` | Entity Relationship Diagram, Class Diagram, dan spesifikasi sembilan tabel |
+| `DRAFT_BAB4_D.md` | Draf kelebihan dan kelemahan penelitian |
+| `DRAFT_BAB5.md` | Draf simpulan dan saran |
 
 ---
 
@@ -105,6 +135,27 @@ Tiga aktor sistem sesuai use case diagram, dengan kata sandi awal
 Pembatasan hak akses diterapkan pada tingkat pengendali (controller). Pengguna
 yang membuka halaman di luar kewenangannya akan dialihkan ke dasbor beserta
 pesan peringatan.
+
+### Peta menu dan hak akses
+
+Tanda centang menunjukkan menu tersedia bagi peran tersebut.
+
+| Menu | Use case | Super Admin | Admin Panitia | Peserta |
+|---|---|---|---|---|
+| Dasbor | – | ✓ | ✓ | ✓ |
+| Event | – | ✓ | ✓ | lihat saja |
+| Kriteria | UC-03 | ✓ | lihat saja | lihat saja |
+| Peserta | UC-04 | ✓ | ✓ | – |
+| Impor Log | UC-05 | ✓ | ✓ | – |
+| Pre-processing | UC-06 | ✓ | ✓ | – |
+| TOPSIS | UC-07 | ✓ | ✓ | – |
+| Peringkat | UC-08 | ✓ | ✓ | ✓ |
+| Detail Skor | UC-09 | seluruh peserta | seluruh peserta | miliknya saja |
+| Cetak Laporan | UC-10 | ✓ | ✓ | – |
+| Pengguna | UC-02 | ✓ | – | – |
+
+Super Admin memperoleh seluruh kewenangan Admin Panitia agar dapat menyiapkan
+data tanpa berganti akun.
 
 ---
 
@@ -322,6 +373,14 @@ keputusan (X). Panel bawah halaman menampilkan pratinjau matriks tersebut.
 Nilai kriteria C7 tidak ditimpa oleh proses ini karena bersumber dari
 pengukuran fisik oleh panitia, bukan dari log olahraga.
 
+**Perlakuan terhadap peserta tanpa log aktivitas.** Peserta yang belum memiliki
+satu pun log aktivitas akan dilewati apabila skornya sudah ada. Ketentuan ini
+melindungi nilai yang dimasukkan langsung, misalnya data simulasi lima peserta
+Bab IV yang memang tidak memiliki log aktivitas. Tanpa perlakuan tersebut,
+menjalankan pre-processing akan mengubah seluruh nilai peserta itu menjadi nol.
+Peserta yang belum memiliki log maupun skor akan diisi nol beserta catatan
+"Belum ada log aktivitas".
+
 ![Pre-processing data](gambar/06-preprocessing.png)
 
 **Gambar 4. 31** Tampilan Pre-processing Data dan Matriks Keputusan (UC-06)
@@ -505,7 +564,130 @@ halaman **Event › Ubah aturan** tanpa mengubah kode program.
 
 ---
 
-## H. Penanganan Masalah
+## H. Skenario Demonstrasi Sistem
+
+Bagian ini menyusun urutan langkah untuk memperagakan seluruh kemampuan sistem
+secara berurutan, misalnya pada saat sidang atau serah terima kepada panitia.
+Skenario disusun agar setiap use case tampil sekali, dan agar hasil akhirnya
+dapat langsung dibandingkan dengan perhitungan manual pada Bab IV.
+
+### 1. Persiapan
+
+```bash
+bin/rails db:drop db:create db:migrate db:seed
+bin/rails server
+```
+
+Data awal memuat dua event:
+
+| Event | Isi | Kegunaan pada peragaan |
+|---|---|---|
+| SEBUSE 2026 | Lima peserta beserta matriks keputusan Bab IV, tanpa log aktivitas | Memperagakan perhitungan TOPSIS dan membandingkannya dengan Bab IV |
+| SEBUSE 2026 (demo pre-processing) | Satu peserta beserta lima belas baris log aktivitas | Memperagakan impor berkas dan pre-processing dari data mentah |
+
+Siapkan pula berkas `docs/contoh/contoh-impor-log-aktivitas.csv` yang akan
+diunggah pada langkah 4.
+
+> **Penting.** Peragaan impor dan pre-processing dilakukan pada event **demo**,
+> bukan pada SEBUSE 2026. Menambahkan log aktivitas ke lima peserta SEBUSE 2026
+> akan membuat pre-processing menghitung ulang nilainya, sehingga matriks
+> keputusan Bab IV tidak lagi sama dengan yang tertulis di skripsi.
+
+### 2. Menunjukkan pembatasan hak akses (UC-01 dan UC-02)
+
+1. Masuk sebagai `peserta@cahayasuarautama.co.id`. Perhatikan navigasi hanya
+   memuat Dasbor dan Peringkat.
+2. Ketikkan alamat `http://localhost:3000/users` secara langsung. Sistem
+   mengalihkan ke dasbor beserta pesan penolakan, membuktikan pembatasan berada
+   pada tingkat pengendali, bukan sekadar penyembunyian menu.
+3. Keluar, lalu masuk sebagai `superadmin@cahayasuarautama.co.id`. Menu Pengguna
+   kini tersedia.
+
+### 3. Menunjukkan validasi bobot (UC-03)
+
+1. Buka menu **Kriteria**. Penanda di kanan atas menyatakan total bobot 100%.
+2. Ubah bobot C1 dari 20 menjadi 25, lalu tekan **Simpan kriteria & bobot**.
+3. Sistem menolak dengan pesan bahwa total bobot harus tepat 100%, dan nilai
+   sebelumnya dipulihkan. Inilah syarat 3.1 pada UC-03 yang sedang berjalan.
+4. Ubah C1 menjadi 25 dan C2 menjadi 10 secara bersamaan, lalu simpan. Kini
+   totalnya tetap 100% sehingga perubahan diterima.
+5. Kembalikan C1 ke 20 dan C2 ke 15 sebelum melanjutkan.
+
+### 4. Impor berkas rekap log aktivitas (UC-05)
+
+1. Buka menu **Event**, lalu pilih event **SEBUSE 2026 (demo pre-processing)**.
+2. Buka **Impor Log**, tekan **Unduh template CSV** untuk menunjukkan acuan kolom.
+3. Unggah `docs/contoh/contoh-impor-log-aktivitas.csv`, lalu tekan **Import Data**.
+   Sistem memberitahukan lima baris berhasil diimpor.
+4. Perhatikan panel **Riwayat impor** yang kini memuat batch baru.
+5. Untuk menunjukkan penolakan, sunting berkas tersebut dan ubah satu NIP menjadi
+   `CSU-9999`, lalu unggah kembali. Sistem menolak seluruh berkas sambil menyebut
+   nomor baris dan alasannya, dan jumlah log tidak bertambah.
+6. Tekan **Batalkan batch** pada batch hasil langkah 3 untuk menunjukkan bahwa
+   satu unggahan dapat ditarik kembali secara utuh.
+
+### 5. Pre-processing data mentah (UC-06)
+
+1. Masih pada event demo, buka menu **Pre-processing**.
+2. Tunjukkan panel **Aturan yang diterapkan**, yang seluruh angkanya dibaca dari
+   pengaturan event.
+3. Tekan **Jalankan pre-processing**.
+4. Perhatikan matriks keputusan yang terbentuk. Arahkan penunjuk tetikus pada
+   sebuah nilai untuk menampilkan catatan evaluasinya, misalnya keterangan bahwa
+   satu log dipangkas oleh kuota harian, atau jumlah rentetan pelanggaran C6.
+
+### 6. Perhitungan TOPSIS dan pembandingan dengan Bab IV (UC-07)
+
+1. Buka menu **Event**, lalu pilih event **SEBUSE 2026**.
+2. Buka menu **TOPSIS**, lalu tekan **Hitung TOPSIS**.
+3. Sistem menampilkan halaman rincian komputasi yang memuat keenam tahapan.
+   Bandingkan angkanya dengan Bab IV:
+
+   | Yang dibandingkan | Nilai acuan pada Bab IV |
+   |---|---|
+   | Pembagi normalisasi C1 | 181,2457 |
+   | Matriks R baris A1 kolom C1 | 0,4690 |
+   | Solusi ideal positif C1 | 0,1048 |
+   | Nilai preferensi A5 Eka | 0,8988 |
+   | Nilai preferensi A4 Dedi | 0,0000 |
+
+4. Jelaskan bahwa nilai preferensi Dedi bernilai nol karena capaiannya menjadi
+   nilai terkecil pada seluruh sepuluh kriteria, sehingga jaraknya terhadap
+   solusi ideal negatif adalah nol.
+
+### 7. Papan peringkat dan laporan (UC-08 dan UC-10)
+
+1. Buka menu **Peringkat**. Urutan juara tampil dari nilai preferensi tertinggi.
+2. Tekan **Cetak PDF**. Berkas laporan resmi terunduh, memuat kop perusahaan,
+   tabel peringkat, tabel bobot, dan ruang tanda tangan.
+3. Tekan **Export Excel**. Tunjukkan ketiga lembar kerjanya, khususnya lembar
+   Matriks Keputusan yang memungkinkan hasil laporan diperiksa ulang secara
+   manual.
+
+### 8. Sudut pandang peserta (UC-08 dan UC-09)
+
+1. Keluar, lalu masuk sebagai `peserta@cahayasuarautama.co.id`. Akun ini sudah
+   ditautkan ke peserta A1 Budi oleh data awal.
+2. Buka menu **Peringkat**. Panel ringkasan peringkat pribadi tampil di bagian
+   atas, dan baris peserta yang bersangkutan disorot.
+3. Tekan **Lihat 10 kriteria saya**. Rincian capaian sepuluh kriteria tampil
+   beserta bobot, batang capaian, dan catatan evaluasi.
+4. Untuk menunjukkan pembatasan UC-09, ubah alamat menjadi `/scores/2`, yaitu
+   peserta lain. Sistem menolaknya.
+
+### 9. Menunjukkan bukti kebenaran perhitungan
+
+```bash
+bundle exec rspec spec/services/topsis_engine_spec.rb --format documentation
+```
+
+Keluaran perintah tersebut memuat daftar butir yang diperiksa, termasuk
+kesesuaian pembagi normalisasi, matriks R, solusi ideal, jarak Euclidean, dan
+nilai preferensi terhadap perhitungan manual Bab IV.
+
+---
+
+## I. Penanganan Masalah
 
 | Gejala | Penyebab | Penyelesaian |
 |---|---|---|
@@ -522,10 +704,76 @@ halaman **Event › Ubah aturan** tanpa mengubah kode program.
 | Impor ditolak dengan pesan "Format berkas ... tidak didukung" | Berkas bukan CSV, XLSX, atau XLS | Simpan ulang berkas ke salah satu format tersebut |
 | Sebagian data terimpor ganda | Berkas yang sama diunggah dua kali | Batalkan salah satu batch melalui panel Riwayat impor |
 | Tombol Cetak PDF tidak muncul | Perhitungan TOPSIS belum pernah dijalankan, atau akun berperan Peserta | Jalankan UC-07 lebih dahulu, dan gunakan akun Admin Panitia |
+| Nilai peserta berubah menjadi nol setelah pre-processing | Peserta memiliki log aktivitas yang tidak lengkap, sehingga nilainya dihitung ulang dari log tersebut | Periksa log aktivitas peserta. Peserta yang tidak memiliki log sama sekali tidak akan ditimpa, tetapi peserta yang memiliki sebagian log akan dihitung dari log yang ada |
+| Matriks keputusan data simulasi berubah | Log aktivitas ditambahkan pada peserta data simulasi, lalu pre-processing dijalankan | Pulihkan data awal dengan `bin/rails db:drop db:create db:migrate db:seed`, dan lakukan peragaan impor pada event demo |
 
 ---
 
-## I. Bahan Siap Tempel untuk Laporan
+## J. Ringkasan Pengujian Otomatis
+
+Kebenaran sistem dijaga oleh pengujian otomatis yang dapat dijalankan kapan saja
+melalui `bundle exec rspec`. Ringkasan cakupannya sebagai berikut:
+
+| Berkas pengujian | Yang dibuktikan |
+|---|---|
+| `spec/services/topsis_engine_spec.rb` | Keluaran mesin TOPSIS sama dengan perhitungan manual Bab IV hingga empat angka desimal, meliputi sepuluh pembagi normalisasi, matriks R, solusi ideal, jarak Euclidean, dan nilai preferensi. Termasuk pula kasus batas seperti alternatif identik dan kolom bernilai nol |
+| `spec/services/preprocessing_engine_spec.rb` | Setiap rumus C1 sampai C10 diuji sendiri-sendiri, termasuk pemangkasan kuota harian, pembatasan nilai pada rentang 0 sampai 100, dan perlindungan skor peserta tanpa log aktivitas |
+| `spec/services/preprocessing_engine_rules_spec.rb` | Penurunan skor dari dua puluh satu baris log mentah menghasilkan nilai yang sama dengan contoh perhitungan aturan penilaian |
+| `spec/services/topsis_run_creator_spec.rb` | Matriks keputusan tersusun benar dari basis data, cuplikan perhitungan tersimpan, dan peserta dengan skor tidak lengkap dilewati |
+| `spec/services/activity_log_import_spec.rb` | Pembacaan berkas CSV dan XLSX, penolakan baris tidak sah beserta nomor barisnya, dan pembatalan seluruh berkas bila ada satu baris yang salah |
+| `spec/services/report_generator_spec.rb` | Isi berkas PDF dan Excel dibaca kembali dan diperiksa, bukan hanya keberhasilan pemanggilan metodenya |
+| `spec/requests/authorization_spec.rb` | Pembatasan hak akses setiap use case bagi ketiga peran |
+| `spec/requests/committee_workflow_spec.rb` | Alur kerja panitia dari pencatatan log sampai papan peringkat |
+| `spec/requests/participant_view_spec.rb` | Peserta hanya dapat membuka rincian skor miliknya |
+| `spec/requests/import_and_report_spec.rb` | Unggahan berkas sesungguhnya, pembatalan batch, dan pengunduhan laporan |
+| `spec/models/criterion_spec.rb` | Akumulasi bobot wajib tepat 100% sesuai syarat UC-03 |
+| `spec/models/user_spec.rb` | Pembagian kewenangan ketiga peran |
+
+Pengujian `topsis_engine_spec.rb` merupakan yang terpenting bagi penelitian ini,
+karena berkas itulah yang menyatakan bahwa hasil sistem sama dengan hasil
+perhitungan tangan yang tertulis pada skripsi.
+
+---
+
+## K. Glosarium
+
+### 1. Istilah metode TOPSIS
+
+| Istilah | Penjelasan |
+|---|---|
+| Alternatif | Pilihan yang diperingkatkan. Pada penelitian ini setiap peserta menjadi satu alternatif, diberi kode A1 sampai An |
+| Kriteria | Aspek penilaian. Terdapat sepuluh kriteria, diberi kode C1 sampai C10 |
+| Benefit | Sifat kriteria yang semakin tinggi nilainya semakin baik. Seluruh kriteria SEBUSE bertipe benefit |
+| Cost | Sifat kriteria yang semakin rendah nilainya semakin baik. Tidak dipakai pada penelitian ini, namun tetap didukung sistem |
+| Bobot (W) | Besar pengaruh setiap kriteria terhadap hasil akhir. Akumulasi seluruh bobot harus tepat 1,0 |
+| Matriks keputusan (X) | Kumpulan nilai seluruh alternatif pada seluruh kriteria setelah pra-pemrosesan, berskala 0 sampai 100 |
+| Normalisasi | Penyeragaman skala antar kriteria dengan membagi setiap nilai oleh akar jumlah kuadrat kolomnya |
+| Matriks ternormalisasi (R) | Hasil normalisasi matriks keputusan, bernilai antara 0 dan 1 |
+| Matriks terbobot (Y) | Matriks ternormalisasi yang setiap kolomnya telah dikalikan bobot kriteria |
+| Solusi ideal positif (A⁺) | Susunan nilai terbaik pada setiap kriteria, diambil dari nilai terbesar kolom matriks Y |
+| Solusi ideal negatif (A⁻) | Susunan nilai terburuk pada setiap kriteria, diambil dari nilai terkecil kolom matriks Y |
+| Jarak Euclidean | Ukuran kedekatan geometris antara satu alternatif dengan susunan solusi ideal |
+| D⁺ | Jarak Euclidean satu alternatif terhadap solusi ideal positif. Semakin kecil semakin baik |
+| D⁻ | Jarak Euclidean satu alternatif terhadap solusi ideal negatif. Semakin besar semakin baik |
+| Nilai preferensi (Vᵢ) | Kedekatan relatif satu alternatif terhadap solusi ideal, bernilai 0 sampai 1. Dasar pengurutan peringkat |
+| Rank reversal | Gejala berubahnya urutan peringkat akibat perubahan bobot atau perubahan susunan alternatif |
+
+### 2. Istilah sistem
+
+| Istilah | Penjelasan |
+|---|---|
+| Pra-pemrosesan (pre-processing) | Tahap mengubah log aktivitas mentah menjadi matriks keputusan berskala 0 sampai 100 |
+| Kuota poin harian | Batas empat poin per hari. Kelebihannya dipangkas proporsional agar komposisi jenis olahraga tetap terjaga |
+| Rentetan pelanggaran | Satu kelompok hari cardio berturut-turut yang melampaui batas tiga hari. Penalti dihitung per rentetan, bukan per hari |
+| Batch impor | Satu kali unggahan berkas rekap. Ditandai secara tersendiri agar dapat dibatalkan utuh |
+| Cuplikan perhitungan (snapshot) | Salinan bobot dan seluruh matriks pada saat perhitungan dijalankan, disimpan agar hasil lama tetap dapat diaudit |
+| Evidence | Bukti aktivitas berupa tautan Strava atau foto Timestamp, dinilai keabsahannya oleh panitia untuk kriteria C10 |
+| Aktor | Peran pengguna sistem, yaitu Super Admin, Admin Panitia, dan Peserta |
+| Use case | Satu fungsi sistem dari sudut pandang aktor, diberi kode UC-01 sampai UC-10 |
+
+---
+
+## L. Bahan Siap Tempel untuk Laporan
 
 ### 1. Usulan penempatan pada Bab IV
 

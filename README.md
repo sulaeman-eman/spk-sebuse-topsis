@@ -112,8 +112,8 @@ tanpa mengubah kode.
 
 ## Dokumentasi
 
-- [Manual Pengguna](docs/MANUAL_PENGGUNA.md) — panduan setiap use case beserta tangkapan layar
-- [Manual Pengguna (PDF)](docs/Manual_Pengguna_SPK_SEBUSE.pdf) — versi siap cetak, 23 halaman A4
+- [Manual Pengguna](docs/MANUAL_PENGGUNA.md) — panduan setiap use case, skenario demonstrasi, glosarium, dan tangkapan layar
+- [Manual Pengguna (PDF)](docs/Manual_Pengguna_SPK_SEBUSE.pdf) — versi siap cetak, 32 halaman A4
 - [Perancangan Basis Data dan Kelas](docs/PERANCANGAN_BASIS_DATA.md) — ERD, Class Diagram, dan spesifikasi sembilan tabel
 - [Perancangan Basis Data (PDF)](docs/Perancangan_Basis_Data_SPK_SEBUSE.pdf) — versi siap cetak, 12 halaman A4
 - [Diagram A4 mendatar (PDF)](docs/Diagram_Perancangan_A4_landscape.pdf) — ERD dan Class Diagram pada halaman mendatar
