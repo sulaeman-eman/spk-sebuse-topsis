@@ -117,6 +117,7 @@ tanpa mengubah kode.
 - [Perancangan Basis Data dan Kelas](docs/PERANCANGAN_BASIS_DATA.md) — ERD, Class Diagram, dan spesifikasi sembilan tabel
 - [Perancangan Basis Data (PDF)](docs/Perancangan_Basis_Data_SPK_SEBUSE.pdf) — versi siap cetak, 12 halaman A4
 - [Diagram A4 mendatar (PDF)](docs/Diagram_Perancangan_A4_landscape.pdf) — ERD dan Class Diagram pada halaman mendatar
+- [Draf Bab IV.D](docs/DRAFT_BAB4_D.md) — kelebihan dan kelemahan penelitian, diturunkan dari keadaan purwarupa
 
 Berkas sumber diagram ada di `docs/diagram/` dalam notasi Mermaid, sehingga
 dapat disunting di peramban bila struktur data berubah.
