@@ -1,22 +1,36 @@
-# Mengubah docs/MANUAL_PENGGUNA.md menjadi docs/manual.html yang siap dicetak
-# ke PDF. Penerjemahnya sengaja hanya menangani penulisan Markdown yang dipakai
-# pada berkas tersebut: judul, paragraf, daftar, tabel, gambar, blok kode, garis
+# Mengubah dokumen Markdown di docs/ menjadi HTML yang siap dicetak ke PDF.
+# Penerjemahnya sengaja hanya menangani penulisan Markdown yang dipakai pada
+# berkas tersebut: judul, paragraf, daftar, tabel, gambar, blok kode, garis
 # pemisah, tebal, dan kode sebaris.
 #
-#   ruby script/build_manual.rb
+#   ruby script/build_manual.rb                              # manual pengguna
+#   ruby script/build_manual.rb docs/PERANCANGAN_BASIS_DATA.md
 
-SOURCE = File.expand_path("../docs/MANUAL_PENGGUNA.md", __dir__)
-TARGET = File.expand_path("../docs/manual.html", __dir__)
+DOCUMENTS = {
+  "MANUAL_PENGGUNA.md" => "manual.html",
+  "PERANCANGAN_BASIS_DATA.md" => "perancangan.html"
+}.freeze
 
-def escape(text)
-  text.gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;")
+source_name = ARGV[0] ? File.basename(ARGV[0]) : "MANUAL_PENGGUNA.md"
+target_name = DOCUMENTS.fetch(source_name) do
+  abort "Dokumen #{source_name} belum terdaftar. Pilihan: #{DOCUMENTS.keys.join(', ')}"
 end
 
-# Penulisan sebaris: gambar, tebal, lalu kode sebaris.
+SOURCE = File.expand_path("../docs/#{source_name}", __dir__)
+TARGET = File.expand_path("../docs/#{target_name}", __dir__)
+
+def escape(text)
+  # Entitas HTML yang sudah ditulis pada sumber, misalnya &middot;, dibiarkan
+  # utuh. Tanpa penjagaan ini tandanya tampil sebagai teks apa adanya.
+  text.gsub(/&(?!#?\w+;)/, "&amp;").gsub("<", "&lt;").gsub(">", "&gt;")
+end
+
+# Penulisan sebaris: gambar, tebal, miring, lalu kode sebaris.
 def inline(text)
   escape(text)
     .gsub(/!\[([^\]]*)\]\(([^)]+)\)/) { %(<img src="#{$2}" alt="#{$1}">) }
     .gsub(/\*\*([^*]+)\*\*/) { "<strong>#{$1}</strong>" }
+    .gsub(/(?<!\*)\*([^*\n]+)\*(?!\*)/) { "<em>#{$1}</em>" }
     .gsub(/`([^`]+)`/) { "<code>#{$1}</code>" }
 end
 
@@ -63,6 +77,15 @@ while index < lines.size
     html << "<table><thead>#{table_row(head, 'th')}</thead>" \
             "<tbody>#{body.map { |row| table_row(row, 'td') }.join}</tbody></table>"
 
+  when /^>\s?/
+    quote = []
+    while index < lines.size && lines[index].start_with?(">")
+      quote << lines[index].sub(/^>\s?/, "")
+      index += 1
+    end
+    index -= 1
+    html << "<blockquote>#{inline(quote.reject(&:empty?).join(' '))}</blockquote>"
+
   when /^\s*[-*]\s+/
     items = []
     while index < lines.size && lines[index].match?(/^\s*[-*]\s+/)
@@ -92,7 +115,7 @@ while index < lines.size
   else
     paragraph = []
     while index < lines.size && !lines[index].empty? &&
-          !lines[index].match?(%r{^(\||#|---+$|```|\s*[-*]\s|\s*\d+\.\s)})
+          !lines[index].match?(%r{^(\||#|>|---+$|```|\s*[-*]\s|\s*\d+\.\s)})
       paragraph << lines[index]
       index += 1
     end
@@ -139,6 +162,12 @@ STYLE = <<~CSS
   }
   th, td { border: 1px solid #c9d2dc; padding: 4pt 6pt; text-align: left; vertical-align: top; }
   th { background: #eef3f8; font-weight: bold; }
+  em { font-style: italic; }
+  blockquote {
+    margin: 0 0 12pt; padding: 8pt 12pt;
+    background: #f7f9fb; border-left: 3pt solid #1b5e8c;
+    page-break-inside: avoid; text-align: justify;
+  }
   figure { margin: 10pt 0 4pt; page-break-inside: avoid; text-align: center; }
   img { max-width: 100%; border: 1px solid #ccd4de; }
   figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Class Diagram SPK SEBUSE</title>
+<style>
+  body { margin: 0; padding: 24px; background: #fff; font-family: system-ui, "Segoe UI", sans-serif; }
+  .diagram { display: inline-block; }
+</style>
+</head>
+<body>
+<div class="diagram">
+<pre class="mermaid">
+classDiagram
+    direction TB
+
+    class User {
+        +String email_address
+        +String password_digest
+        +String name
+        +Integer role
+        +manages_users() Boolean
+        +manages_criteria() Boolean
+        +runs_topsis() Boolean
+    }
+
+    class Session {
+        +String ip_address
+        +String user_agent
+    }
+
+    class Event {
+        +String name
+        +Date start_date
+        +Date end_date
+        +Integer target_cardio
+        +Integer target_strength
+        +Integer total_weeks
+        +Integer daily_point_cap
+        +Integer max_consecutive_cardio_days
+        +latest_topsis_run() TopsisRun
+    }
+
+    class Criterion {
+        +String code
+        +String name
+        +Decimal weight
+        +Integer criterion_type
+        +Integer position
+        +total_weight() Decimal
+        +weights_balanced() Boolean
+        +update_weights(bobot) Boolean
+        +label() String
+    }
+
+    class Participant {
+        +String nip
+        +String name
+        +String department
+        +String alternative_code
+        +decision_row() Array
+    }
+
+    class ActivityLog {
+        +Date activity_date
+        +Integer activity_type
+        +Decimal raw_points
+        +Decimal distance_km
+        +Boolean evidence_valid
+        +Integer source
+        +UUID import_batch_id
+    }
+
+    class CriterionScore {
+        +Decimal raw_value
+        +Decimal normalized_value
+        +String notes
+    }
+
+    class TopsisRun {
+        +DateTime executed_at
+        +JSON weights_snapshot
+        +JSON decision_matrix
+        +JSON normalized_matrix
+        +JSON weighted_matrix
+        +JSON ideal_positive
+        +JSON ideal_negative
+        +winner() RankingResult
+    }
+
+    class RankingResult {
+        +Decimal d_positive
+        +Decimal d_negative
+        +Decimal preference_value
+        +Integer rank
+        +award_label() String
+    }
+
+    class PreprocessingEngine {
+        -Event event
+        +call() Integer
+        -capped_logs(peserta) Array
+        -cardio(logs) Array
+        -strength(logs) Array
+        -long_run(logs) Array
+        -weekly_requirement(logs) Array
+        -weekly_bonus(logs) Array
+        -streak_rule(logs) Array
+        -fun_sports(logs) Array
+        -daily_discipline(logs) Array
+        -evidence_quality(logs) Array
+    }
+
+    class TopsisEngine {
+        -Array matrix
+        -Array weights
+        -Array types
+        +call() Result
+        -normalize() Array
+        -apply_weights(R) Array
+        -ideal_solution(Y, arah) Array
+        -distances(Y, ideal) Array
+        -preference_values(Dp, Dn) Array
+        -ranks_for(V) Array
+    }
+
+    class TopsisRunCreator {
+        -Event event
+        -User executed_by
+        +call() TopsisRun
+        -scored_participants(kriteria) Array
+        -persist(hasil) TopsisRun
+    }
+
+    class ActivityLogImport {
+        -Event event
+        -File file
+        +call() Result
+        +template_csv() String
+        -read_rows() Array
+        -build_attributes(baris) Hash
+    }
+
+    class ReportGenerator {
+        -TopsisRun topsis_run
+        +to_pdf() String
+        +to_xlsx() String
+        +filename(format) String
+    }
+
+    User "1" --> "0..*" Session : memiliki
+    User "0..1" --> "0..*" Participant : ditautkan
+    User "0..1" --> "0..*" TopsisRun : mengeksekusi
+    Event "1" --> "0..*" Participant : memiliki
+    Event "1" --> "0..*" TopsisRun : menghasilkan
+    Participant "1" --> "0..*" ActivityLog : mencatat
+    Participant "1" --> "0..*" CriterionScore : memperoleh
+    Criterion "1" --> "0..*" CriterionScore : menilai
+    TopsisRun "1" *-- "0..*" RankingResult : menetapkan
+    Participant "1" --> "0..*" RankingResult : menerima
+
+    PreprocessingEngine ..> ActivityLog : membaca
+    PreprocessingEngine ..> CriterionScore : menulis
+    ActivityLogImport ..> ActivityLog : menulis
+    TopsisRunCreator ..> CriterionScore : membaca
+    TopsisRunCreator ..> TopsisEngine : memakai
+    TopsisRunCreator ..> TopsisRun : menulis
+    ReportGenerator ..> TopsisRun : membaca
+</pre>
+</div>
+
+<script src="https://unpkg.com/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: "base",
+    themeVariables: {
+      fontFamily: 'system-ui, "Segoe UI", sans-serif',
+      fontSize: "13px",
+      primaryColor: "#eef3f8",
+      primaryTextColor: "#14202e",
+      primaryBorderColor: "#1b5e8c",
+      lineColor: "#55677d",
+      tertiaryColor: "#ffffff"
+    },
+    class: { useMaxWidth: false }
+  });
+  mermaid.run().then(function () {
+    // Mermaid menyetel lebar SVG menjadi 100% sehingga diagram ikut mengecil
+    // mengikuti lebar jendela. Ukuran alami dari viewBox dipulihkan agar hasil
+    // tangkapan layar tetap tajam.
+    document.querySelectorAll("svg").forEach(function (svg) {
+      var box = svg.getAttribute("viewBox").split(/\s+/);
+      svg.setAttribute("width", box[2]);
+      svg.setAttribute("height", box[3]);
+      svg.style.maxWidth = "none";
+    });
+    document.title = document.documentElement.scrollHeight + "x" + document.documentElement.scrollWidth;
+  });
+</script>
+</body>
+</html>

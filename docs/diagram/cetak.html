@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Diagram Perancangan SPK SEBUSE</title>
+<style>
+  /*
+   * Halaman cetak A4 mendatar. ERD dan Class Diagram terlalu lebar untuk
+   * halaman tegak: pada lebar cetak 190 mm tulisannya hanya sekitar 5 pt.
+   * Dengan orientasi mendatar, lebar cetaknya menjadi 257 mm sehingga
+   * tulisan diagram terbaca.
+   */
+  @page { size: A4 landscape; margin: 12mm; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Times New Roman", Georgia, serif;
+    color: #1a1a1a;
+  }
+
+  .page {
+    page-break-after: always;
+    page-break-inside: avoid;
+    height: 168mm;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page:last-child { page-break-after: auto; }
+
+  img {
+    max-width: 100%;
+    max-height: 152mm;
+    object-fit: contain;
+  }
+
+  figcaption {
+    margin-top: 8pt;
+    font-size: 11pt;
+    text-align: center;
+  }
+
+  figcaption strong { font-weight: bold; }
+</style>
+</head>
+<body>
+  <figure class="page">
+    <img src="../gambar/15-erd.png" alt="Entity Relationship Diagram">
+    <figcaption><strong>Gambar 4. 22</strong> Entity Relationship Diagram Sistem Pendukung Keputusan SEBUSE</figcaption>
+  </figure>
+
+  <figure class="page">
+    <img src="../gambar/16-class-diagram.png" alt="Class Diagram">
+    <figcaption><strong>Gambar 4. 23</strong> Class Diagram Sistem Pendukung Keputusan SEBUSE</figcaption>
+  </figure>
+</body>
+</html>
