@@ -51,6 +51,20 @@ class PreprocessingEngine
         next
       end
 
+      # Peserta tanpa satu pun log aktivitas tidak dihitung ulang bila skornya
+      # sudah ada. Tanpa penjagaan ini, menjalankan pre-processing atas peserta
+      # yang nilainya dimasukkan langsung, misalnya data simulasi, akan menimpa
+      # seluruh nilainya menjadi nol.
+      if logs.empty?
+        next if score.persisted?
+
+        score.raw_value = nil
+        score.normalized_value = 0
+        score.notes = "Belum ada log aktivitas"
+        score.save!
+        next
+      end
+
       raw, value, notes = evaluate(criterion.code, logs)
 
       score.raw_value = raw

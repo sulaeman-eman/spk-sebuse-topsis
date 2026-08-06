@@ -313,4 +313,53 @@ RSpec.describe PreprocessingEngine do
       expect(participant.criterion_scores.count).to eq(10)
     end
   end
+
+  # Skor peserta dapat berasal dari pemasukan langsung, misalnya data simulasi
+  # Bab IV yang tidak memiliki log aktivitas. Menjalankan pre-processing tidak
+  # boleh menghapus nilai tersebut menjadi nol.
+  describe "peserta tanpa log aktivitas" do
+    it "tidak menimpa skor yang sudah ada" do
+      criteria = Criterion.ordered.to_a
+      nilai = [ 85, 80, 100, 90, 85, 90, 80, 75, 90, 95 ]
+      criteria.each_with_index do |criterion, index|
+        CriterionScore.create!(
+          participant: participant, criterion: criterion, normalized_value: nilai[index]
+        )
+      end
+
+      described_class.new(event).call
+
+      expect(participant.reload.decision_row.map(&:to_i)).to eq(nilai)
+    end
+
+    it "mengisi nol beserta catatan bila skornya memang belum ada" do
+      described_class.new(event.tap { participant }).call
+
+      expect(participant.criterion_scores.count).to eq(10)
+      expect(value("C1")).to eq(0)
+      expect(score("C1").notes).to eq("Belum ada log aktivitas")
+    end
+
+    it "tetap menghitung ulang peserta lain yang memiliki log" do
+      criteria = Criterion.ordered.to_a
+      criteria.each do |criterion|
+        CriterionScore.create!(participant: participant, criterion: criterion, normalized_value: 90)
+      end
+
+      aktif = Participant.create!(
+        event: event, nip: "CSU-9002", name: "Aktif", alternative_code: "A2"
+      )
+      12.times do |i|
+        aktif.activity_logs.create!(
+          activity_date: event.start_date + (i * 2), activity_type: :cardio, raw_points: 2
+        )
+      end
+
+      described_class.new(event).call
+
+      cardio = Criterion.find_by(code: "C1")
+      expect(participant.criterion_scores.find_by(criterion: cardio).normalized_value).to eq(90)
+      expect(aktif.criterion_scores.find_by(criterion: cardio).normalized_value).to eq(100)
+    end
+  end
 end
