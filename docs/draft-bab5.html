@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Draf Bab V - SPK SEBUSE</title>
+<style>@page { size: A4; margin: 20mm 18mm; }
+* { box-sizing: border-box; }
+body {
+  font: 11pt/1.6 "Times New Roman", Georgia, serif;
+  color: #1a1a1a; max-width: 190mm; margin: 0 auto; padding: 12mm 0;
+}
+h1 { font-size: 20pt; text-align: center; margin: 0 0 4pt; }
+h2 { font-size: 13pt; margin: 20pt 0 8pt; page-break-after: avoid; }
+h3 { font-size: 12pt; margin: 16pt 0 6pt; page-break-after: avoid; }
+h1 + h2 { text-align: center; font-weight: normal; font-size: 12pt; margin-top: 0; }
+p { margin: 0 0 8pt; text-align: justify; }
+hr { border: 0; border-top: 1px solid #ccc; margin: 16pt 0; }
+ul, ol { margin: 0 0 10pt; padding-left: 22pt; }
+li { margin-bottom: 4pt; }
+code {
+  font-family: Consolas, "Courier New", monospace; font-size: 9.5pt;
+  background: #f2f4f7; padding: 1pt 3pt; border-radius: 3px;
+}
+pre {
+  background: #f7f9fb; border: 1px solid #dde3ea; border-radius: 4px;
+  padding: 8pt 10pt; overflow-x: auto; page-break-inside: avoid;
+}
+pre code { background: none; padding: 0; font-size: 9.5pt; }
+table {
+  width: 100%; border-collapse: collapse; font-size: 9.5pt;
+  margin: 0 0 12pt; page-break-inside: avoid;
+}
+th, td { border: 1px solid #c9d2dc; padding: 4pt 6pt; text-align: left; vertical-align: top; }
+th { background: #eef3f8; font-weight: bold; }
+em { font-style: italic; }
+blockquote {
+  margin: 0 0 12pt; padding: 8pt 12pt;
+  background: #f7f9fb; border-left: 3pt solid #1b5e8c;
+  page-break-inside: avoid; text-align: justify;
+}
+figure { margin: 10pt 0 4pt; page-break-inside: avoid; text-align: center; }
+img { max-width: 100%; border: 1px solid #ccd4de; }
+figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
+</style>
+</head>
+<body>
+<h1>Draf Bab V</h1>
+<h2>Penutup</h2>
+<p>Dokumen ini merupakan draf untuk mengisi Bab V yang masih kosong. Butir simpulan disusun agar menjawab ketiga tujuan penelitian pada Bab I secara berurutan, sedangkan butir saran dipasangkan dengan kelemahan penelitian pada Bab IV bagian D. Penulis tetap perlu menyesuaikan susunan kalimat dengan gaya penulisan bab sebelumnya.</p>
+<hr>
+<h2>BAB V</h2>
+<h2>PENUTUP</h2>
+<h3>A. Simpulan</h3>
+<p>Berdasarkan hasil perancangan, pembangunan, dan pengujian Sistem Pendukung Keputusan penentuan peringkat Corporate Wellness Program pada event SEBUSE di PT Cahaya Suara Utama dengan metode TOPSIS, diperoleh simpulan sebagai berikut:</p>
+<p><strong>1. Identifikasi kriteria dan pra-pemrosesan data telah menghasilkan matriks keputusan yang terukur.</strong> Sepuluh kriteria penilaian aktivitas fisik pada regulasi laman medicalrjbb.com berhasil diidentifikasi, seluruhnya bertipe <em>benefit</em>, dan masing-masing memperoleh rumus konversi tersendiri menuju skala seragam 0 sampai 100. Tahap pra-pemrosesan mencakup pemangkasan kuota poin harian sebesar empat poin, konversi ketuntasan Long Run ke skala biner diskrit, perhitungan proporsi ketercapaian mingguan, serta penerapan fungsi penalti terhadap pelanggaran aturan olahraga beruntun. Pada tahap ini ditemukan pula bahwa akumulasi bobot kriteria semula berjumlah 105%, sehingga dilakukan koreksi menjadi tepat 100% agar memenuhi syarat pembobotan metode TOPSIS. Koreksi tersebut tidak mengubah urutan peringkat yang dihasilkan.</p>
+<p><strong>2. Arsitektur perangkat lunak dan pemodelan sistem telah dirancang secara terstruktur menggunakan UML.</strong> Perancangan mencakup use case diagram dengan sepuluh use case dan tiga aktor, activity diagram, sequence diagram, class diagram, serta Entity Relationship Diagram yang diwujudkan menjadi sembilan tabel basis data. Rancangan memisahkan mesin perhitungan TOPSIS dari lapisan penyimpanan data, sehingga kebenaran perhitungannya dapat diuji secara mandiri terhadap perhitungan manual tanpa bergantung pada basis data.</p>
+<p><strong>3. Purwarupa Sistem Pendukung Keputusan berbasis web telah berhasil dibangun dan menghasilkan pemeringkatan yang objektif serta konsisten.</strong> Sistem dibangun menggunakan kerangka kerja Ruby on Rails dengan basis data PostgreSQL, dan telah mewujudkan seluruh sepuluh use case yang dirancang. Pengujian atas data lima peserta menghasilkan nilai preferensi sebagaimana tercantum pada tabel berikut, dan nilainya identik dengan perhitungan manual hingga empat angka desimal:</p>
+<table><thead><tr><th>Kode</th><th>Nama peserta</th><th>D⁺</th><th>D⁻</th><th>Nilai Vᵢ</th><th>Peringkat</th></tr></thead><tbody><tr><td>A5</td><td>Eka</td><td>0,0078</td><td>0,0696</td><td>0,8988</td><td>Juara 1</td></tr><tr><td>A2</td><td>Andi</td><td>0,0139</td><td>0,0623</td><td>0,8182</td><td>Juara 2</td></tr><tr><td>A1</td><td>Budi</td><td>0,0178</td><td>0,0570</td><td>0,7618</td><td>Juara 3</td></tr><tr><td>A3</td><td>Citra</td><td>0,0429</td><td>0,0330</td><td>0,4350</td><td>Peringkat 4</td></tr><tr><td>A4</td><td>Dedi</td><td>0,0709</td><td>0,0000</td><td>0,0000</td><td>Peringkat 5</td></tr></tbody></table>
+<p>Objektivitas hasil dicapai karena seluruh peserta dinilai oleh satu rangkaian aturan yang sama, sehingga perbedaan penafsiran regulasi antar anggota panitia tidak lagi memengaruhi peringkat. Kesesuaian perhitungan sistem terhadap perhitungan manual dijaga oleh pengujian otomatis yang membandingkan pembagi normalisasi, matriks ternormalisasi, solusi ideal positif dan negatif, jarak Euclidean, serta nilai preferensi.</p>
+<p><strong>4. Transparansi penilaian telah terwujud melalui penyajian seluruh tahapan perhitungan.</strong> Sistem menampilkan keenam tahapan metode TOPSIS beserta rumusnya, dan setiap peserta dapat membuka rincian capaian sepuluh kriteria miliknya beserta catatan evaluasinya. Keterbukaan ini menjawab permasalahan rasa ketidakadilan peserta yang menjadi salah satu latar belakang penelitian. Selain itu, setiap eksekusi perhitungan menyimpan cuplikan bobot dan seluruh matriks yang terbentuk, sehingga hasil pemeringkatan pada suatu periode tetap dapat diperiksa kembali walaupun bobot kriteria disesuaikan pada periode berikutnya.</p>
+<h3>B. Saran</h3>
+<p>Berdasarkan keterbatasan yang diuraikan pada Bab IV bagian D, diajukan saran-saran sebagai berikut:</p>
+<h4>1. Bagi PT Cahaya Suara Utama</h4>
+<p>a. Menerapkan sistem pada periode SEBUSE berikutnya dengan data seluruh peserta, agar perilaku sistem pada jumlah alternatif yang sebenarnya dapat diamati.</p>
+<p>b. Melakukan pengukuran waktu rekapitulasi sebelum dan sesudah penerapan sistem, sehingga besaran penghematan waktu dapat dinyatakan berdasarkan data pengukuran, bukan berdasarkan perkiraan.</p>
+<p>c. Melakukan pengujian penerimaan pengguna kepada panitia dan peserta, agar kesesuaian alur kerja sistem dengan kebiasaan kerja panitia dapat dinilai.</p>
+<p>d. Menetapkan secara tertulis rumus perhitungan untuk kriteria C4, C5, C8, C9, dan C10, karena rumus yang dipakai pada purwarupa masih merupakan penurunan dari pernyataan umum regulasi.</p>
+<p>e. Menambahkan pencatatan hasil pengukuran fisik peserta secara berkala, agar kriteria C7 dapat dihitung otomatis dan tidak lagi bergantung pada penilaian manual panitia.</p>
+<p>f. Menempatkan sistem pada server perusahaan beserta pengamanan sambungan dan pencadangan berkala sebelum dipakai pada kegiatan yang sebenarnya.</p>
+<h4>2. Bagi penelitian selanjutnya</h4>
+<p>a. Menggabungkan metode TOPSIS dengan metode pembobotan objektif seperti Analytical Hierarchy Process atau metode entropi, sehingga konsistensi bobot antar narasumber dapat diukur dan tidak sepenuhnya bergantung pada penilaian pemangku kepentingan.</p>
+<p>b. Melakukan analisis sensitivitas terhadap perubahan bobot kriteria, guna mengetahui seberapa besar perubahan bobot yang mampu membalikkan urutan peringkat (<em>rank reversal</em>).</p>
+<p>c. Menghubungkan sistem secara langsung dengan antarmuka pemrograman aplikasi laman medicalrjbb.com atau Strava, sehingga tahap penyalinan data dapat dihilangkan beserta kemungkinan kesalahan yang menyertainya.</p>
+<p>d. Membandingkan hasil pemeringkatan metode TOPSIS dengan metode pengambilan keputusan multikriteria lain, misalnya Simple Additive Weighting, Weighted Product, atau MOORA, atas data yang sama.</p>
+<p>e. Mengembangkan fungsi perbandingan capaian antar periode SEBUSE, agar perkembangan kebugaran karyawan dari satu periode ke periode berikutnya dapat diamati oleh manajemen perusahaan.</p>
+<hr>
+<h2>Catatan bagi Penulis</h2>
+<h3>1. Keterkaitan simpulan dengan tujuan penelitian</h3>
+<p>Ketiga butir pertama simpulan disusun agar berpasangan satu-satu dengan tujuan penelitian pada Bab I bagian E:</p>
+<table><thead><tr><th>Tujuan penelitian (Bab I.E)</th><th>Simpulan</th></tr></thead><tbody><tr><td>Mengidentifikasi kriteria dan melakukan pra-pemrosesan menjadi matriks keputusan</td><td>Butir 1</td></tr><tr><td>Merancang arsitektur perangkat lunak dan pemodelan UML</td><td>Butir 2</td></tr><tr><td>Mengimplementasikan dan menguji purwarupa berbasis web</td><td>Butir 3</td></tr></tbody></table>
+<p>Butir 4 bersifat tambahan dan menjawab latar belakang mengenai transparansi. Butir tersebut dapat dihapus apabila penulis menghendaki simpulan yang persis sejumlah tujuan penelitian.</p>
+<h3>2. Hal yang perlu diperiksa demi keselarasan antar bab</h3>
+<table><thead><tr><th>Yang perlu diperiksa</th><th>Alasan</th></tr></thead><tbody><tr><td>Nilai Vᵢ pada simpulan butir 3</td><td>Angka pada tabel di atas memakai bobot C7 sebesar 5%. Pastikan Bab III Tabel 3.2 dan Bab IV halaman 42 sampai 47 sudah memakai bobot yang sama, agar tidak ada dua versi angka pada satu skripsi</td></tr><tr><td>Kalimat pada ABSTRAK</td><td>Abstrak saat ini menyatakan sistem "terbukti efektif memangkas waktu rekapitulasi data panitia". Pengukuran waktu belum dilakukan, sedangkan Bab IV.D dan Bab V.B menyatakan hal tersebut sebagai keterbatasan. Sebaiknya kalimat abstrak disesuaikan, misalnya menjadi "dirancang untuk memangkas waktu rekapitulasi", agar tidak bertentangan dengan isi Bab IV dan Bab V</td></tr><tr><td>Klaim efisiensi pada Bab I</td><td>Bab I mengutip temuan penelitian lain mengenai pemotongan waktu hingga 85%. Pastikan penulisannya jelas sebagai temuan penelitian terdahulu, bukan sebagai hasil penelitian ini</td></tr><tr><td>Jumlah use case yang disebut</td><td>Simpulan butir 2 dan 3 menyebut sepuluh use case. Pastikan angkanya sama dengan Bab IV bagian C</td></tr><tr><td>Jumlah tabel basis data</td><td>Simpulan butir 2 menyebut sembilan tabel. Pastikan sama dengan Bab IV bagian C.4</td></tr></tbody></table>
+<h3>3. Ketentuan penulisan simpulan</h3>
+<p>Simpulan tidak boleh memuat informasi yang belum pernah dibahas pada bab sebelumnya. Seluruh angka pada draf ini sudah muncul pada Bab IV, sehingga aman dipakai. Apabila penulis menambahkan pernyataan baru, pastikan dasarnya ada pada bab sebelumnya.</p>
+<p>Bagian simpulan dan saran umumnya cukup disajikan dalam dua sampai tiga halaman. Apabila draf ini terasa terlalu panjang, saran bagi perusahaan butir (f) dan saran bagi penelitian selanjutnya butir (e) dapat dihilangkan lebih dahulu.</p>
+</body>
+</html>

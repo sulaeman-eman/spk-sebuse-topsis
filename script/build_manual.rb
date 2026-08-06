@@ -9,7 +9,8 @@
 DOCUMENTS = {
   "MANUAL_PENGGUNA.md" => "manual.html",
   "PERANCANGAN_BASIS_DATA.md" => "perancangan.html",
-  "DRAFT_BAB4_D.md" => "draft-bab4-d.html"
+  "DRAFT_BAB4_D.md" => "draft-bab4-d.html",
+  "DRAFT_BAB5.md" => "draft-bab5.html"
 }.freeze
 
 source_name = ARGV[0] ? File.basename(ARGV[0]) : "MANUAL_PENGGUNA.md"
@@ -66,9 +67,12 @@ while index < lines.size
   when /^---+$/
     html << "<hr>"
 
-  when /^\|/
+  when /^\s*\|/
     rows = []
-    rows << lines[index] and index += 1 while index < lines.size && lines[index].start_with?("|")
+    while index < lines.size && lines[index].match?(/^\s*\|/)
+      rows << lines[index].strip
+      index += 1
+    end
     index -= 1
 
     head = rows.shift
@@ -98,15 +102,29 @@ while index < lines.size
 
   when /^\s*\d+\.\s+/
     items = []
-    while index < lines.size && (lines[index].match?(/^\s*\d+\.\s+/) || lines[index].match?(/^\s{3,}\S/))
-      if lines[index].match?(/^\s*\d+\.\s+/)
-        items << lines[index].sub(/^\s*\d+\.\s+/, "")
+
+    loop do
+      current = lines[index]
+
+      if current.nil?
+        break
+      elsif current.match?(/^\s*\d+\.\s+/)
+        items << current.sub(/^\s*\d+\.\s+/, "")
+      elsif current.empty?
+        # Baris kosong antar item tidak boleh memutus daftar menjadi dua,
+        # karena penomorannya akan dimulai ulang dari satu.
+        break unless lines[index + 1]&.match?(/^\s*\d+\.\s+/)
+      elsif current.match?(/^\s{3,}\S/) && !current.match?(/^\s*(\||[-*]\s|```|>)/)
+        # Baris menjorok merupakan lanjutan item sebelumnya, kecuali bila baris
+        # itu justru membuka blok lain seperti tabel atau blok kode.
+        items[-1] = "#{items[-1]} #{current.strip}"
       else
-        # Lanjutan baris item sebelumnya.
-        items[-1] = "#{items[-1]} #{lines[index].strip}"
+        break
       end
+
       index += 1
     end
+
     index -= 1
     html << "<ol>#{items.map { |item| "<li>#{inline(item)}</li>" }.join}</ol>"
 
@@ -116,7 +134,7 @@ while index < lines.size
   else
     paragraph = []
     while index < lines.size && !lines[index].empty? &&
-          !lines[index].match?(%r{^(\||#|>|---+$|```|\s*[-*]\s|\s*\d+\.\s)})
+          !lines[index].match?(%r{^(\s*\||\#|>|---+$|```|\s*[-*]\s|\s*\d+\.\s)})
       paragraph << lines[index]
       index += 1
     end
@@ -174,12 +192,15 @@ STYLE = <<~CSS
   figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 CSS
 
+# Judul halaman diambil dari judul pertama dokumen sumber.
+document_title = lines.find { |line| line.start_with?("# ") }&.delete_prefix("# ") || source_name
+
 File.write(TARGET, <<~HTML)
   <!DOCTYPE html>
   <html lang="id">
   <head>
   <meta charset="utf-8">
-  <title>Manual Pengguna SPK SEBUSE</title>
+  <title>#{document_title} - SPK SEBUSE</title>
   <style>#{STYLE}</style>
   </head>
   <body>
