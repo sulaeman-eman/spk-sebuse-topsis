@@ -38,4 +38,6 @@
 # git bila sekali saja ter-commit. Polanya hanya berlaku di direktori utama,
 # sehingga manual pengguna di docs/ tetap diikutkan.
 /*.pdf
+/*.docx
+/*.doc
 

@@ -1,16 +1,23 @@
 # Mengubah dokumen Markdown di docs/ menjadi HTML yang siap dicetak ke PDF.
 # Penerjemahnya sengaja hanya menangani penulisan Markdown yang dipakai pada
 # berkas tersebut: judul, paragraf, daftar, tabel, gambar, blok kode, garis
-# pemisah, tebal, dan kode sebaris.
+# pemisah, tebal, miring, kode sebaris, dan kutipan.
 #
-#   ruby script/build_manual.rb                              # manual pengguna
-#   ruby script/build_manual.rb docs/PERANCANGAN_BASIS_DATA.md
+#   ruby script/build_manual.rb                    # manual pengguna
+#   ruby script/build_manual.rb REVISI_USE_CASE.md # dokumen lain
+#
+# Berkas sumber dicari ke seluruh subdirektori docs/, dan hasilnya diletakkan
+# pada direktori yang sama dengan sumbernya. Dengan begitu penataan docs/ boleh
+# diubah tanpa menyunting berkas ini.
+
+DOCS_ROOT = File.expand_path("../docs", __dir__)
 
 DOCUMENTS = {
   "MANUAL_PENGGUNA.md" => "manual.html",
   "PERANCANGAN_BASIS_DATA.md" => "perancangan.html",
   "DRAFT_BAB4_D.md" => "draft-bab4-d.html",
-  "DRAFT_BAB5.md" => "draft-bab5.html"
+  "DRAFT_BAB5.md" => "draft-bab5.html",
+  "REVISI_USE_CASE.md" => "revisi-use-case.html"
 }.freeze
 
 source_name = ARGV[0] ? File.basename(ARGV[0]) : "MANUAL_PENGGUNA.md"
@@ -18,8 +25,16 @@ target_name = DOCUMENTS.fetch(source_name) do
   abort "Dokumen #{source_name} belum terdaftar. Pilihan: #{DOCUMENTS.keys.join(', ')}"
 end
 
-SOURCE = File.expand_path("../docs/#{source_name}", __dir__)
-TARGET = File.expand_path("../docs/#{target_name}", __dir__)
+SOURCE = Dir.glob(File.join(DOCS_ROOT, "**", source_name)).first
+abort "Berkas #{source_name} tidak ditemukan di dalam #{DOCS_ROOT}" if SOURCE.nil?
+
+TARGET = File.join(File.dirname(SOURCE), target_name)
+
+# Gambar dirujuk sebagai gambar/nama.png pada berkas sumber. Awalan disesuaikan
+# dengan kedalaman berkas hasil terhadap docs/, sehingga rujukannya tetap sah
+# walau dokumen dipindahkan ke subdirektori.
+depth = File.dirname(SOURCE).delete_prefix("#{DOCS_ROOT}/").split("/").reject(&:empty?).size
+IMAGE_PREFIX = "../" * depth
 
 def escape(text)
   # Entitas HTML yang sudah ditulis pada sumber, misalnya &middot;, dibiarkan
@@ -27,10 +42,18 @@ def escape(text)
   text.gsub(/&(?!#?\w+;)/, "&amp;").gsub("<", "&lt;").gsub(">", "&gt;")
 end
 
+# Rujukan gambar dinormalkan lebih dahulu, agar penulisan gambar/nama.png dan
+# ../gambar/nama.png sama-sama menunjuk ke docs/gambar/nama.png.
+def image_src(path)
+  bersih = path.sub(%r{\A(\.\./)+}, "")
+
+  bersih.start_with?("gambar/") ? "#{IMAGE_PREFIX}#{bersih}" : path
+end
+
 # Penulisan sebaris: gambar, tebal, miring, lalu kode sebaris.
 def inline(text)
   escape(text)
-    .gsub(/!\[([^\]]*)\]\(([^)]+)\)/) { %(<img src="#{$2}" alt="#{$1}">) }
+    .gsub(/!\[([^\]]*)\]\(([^)]+)\)/) { %(<img src="#{image_src($2)}" alt="#{$1}">) }
     .gsub(/\*\*([^*]+)\*\*/) { "<strong>#{$1}</strong>" }
     .gsub(/(?<!\*)\*([^*\n]+)\*(?!\*)/) { "<em>#{$1}</em>" }
     .gsub(/`([^`]+)`/) { "<code>#{$1}</code>" }

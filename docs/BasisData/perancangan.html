@@ -50,7 +50,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p>Rancangan ini diturunkan dari sequence diagram pada Bab IV.C.3 dan dari rumus pre-processing pada Bab IV.B.2, kemudian diwujudkan menjadi sembilan tabel pada basis data PostgreSQL.</p>
 <hr>
 <h2>A. Entity Relationship Diagram</h2>
-<figure><img src="gambar/15-erd.png" alt="Entity Relationship Diagram"></figure>
+<figure><img src="../gambar/15-erd.png" alt="Entity Relationship Diagram"></figure>
 <p><strong>Gambar 4. 22</strong> Entity Relationship Diagram Sistem Pendukung Keputusan SEBUSE</p>
 <p>Diagram menampilkan kunci utama, kunci tamu, dan atribut pembeda setiap entitas. Daftar kolom selengkapnya beserta tipe dan batasannya dimuat pada bagian C Spesifikasi Tabel. Kolom <code>parameter_regulasi</code> pada entitas <code>events</code> mewakili dua belas kolom parameter aturan penilaian, dan <code>matriks_perhitungan</code> pada <code>topsis_runs</code> mewakili enam kolom cuplikan langkah perhitungan.</p>
 <blockquote><strong>Catatan penempatan.</strong> Diagram ini lebih lebar daripada tinggi. Pada halaman tegak dengan lebar cetak 190 mm, tulisan di dalamnya hanya berukuran sekitar 5 pt sehingga sukar dibaca. Sisipkan diagram pada halaman <strong>mendatar (landscape)</strong>, atau gunakan berkas <code>Diagram_Perancangan_A4_landscape.pdf</code> yang sudah disiapkan pada ukuran tersebut.</blockquote>
@@ -66,7 +66,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p>Kolom bertipe <code>jsonb</code> pada <code>topsis_runs</code> sengaja tidak dinormalisasi menjadi tabel tersendiri, karena isinya merupakan cuplikan tidak berubah untuk keperluan audit, bukan data operasional yang akan disunting maupun ditelusuri per elemen.</p>
 <hr>
 <h2>B. Class Diagram</h2>
-<figure><img src="gambar/16-class-diagram.png" alt="Class Diagram"></figure>
+<figure><img src="../gambar/16-class-diagram.png" alt="Class Diagram"></figure>
 <p><strong>Gambar 4. 23</strong> Class Diagram Sistem Pendukung Keputusan SEBUSE</p>
 <p>Diagram ini pun disarankan disisipkan pada halaman mendatar dengan alasan yang sama seperti ERD.</p>
 <p>Diagram memuat sembilan kelas model yang mewakili tabel basis data, serta lima kelas layanan (<em>service object</em>) yang menampung logika perhitungan sebagaimana tergambar pada sequence diagram Bab IV.C.3.</p>

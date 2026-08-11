@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Revisi Use Case Diagram - SPK SEBUSE</title>
+<style>@page { size: A4; margin: 20mm 18mm; }
+* { box-sizing: border-box; }
+body {
+  font: 11pt/1.6 "Times New Roman", Georgia, serif;
+  color: #1a1a1a; max-width: 190mm; margin: 0 auto; padding: 12mm 0;
+}
+h1 { font-size: 20pt; text-align: center; margin: 0 0 4pt; }
+h2 { font-size: 13pt; margin: 20pt 0 8pt; page-break-after: avoid; }
+h3 { font-size: 12pt; margin: 16pt 0 6pt; page-break-after: avoid; }
+h1 + h2 { text-align: center; font-weight: normal; font-size: 12pt; margin-top: 0; }
+p { margin: 0 0 8pt; text-align: justify; }
+hr { border: 0; border-top: 1px solid #ccc; margin: 16pt 0; }
+ul, ol { margin: 0 0 10pt; padding-left: 22pt; }
+li { margin-bottom: 4pt; }
+code {
+  font-family: Consolas, "Courier New", monospace; font-size: 9.5pt;
+  background: #f2f4f7; padding: 1pt 3pt; border-radius: 3px;
+}
+pre {
+  background: #f7f9fb; border: 1px solid #dde3ea; border-radius: 4px;
+  padding: 8pt 10pt; overflow-x: auto; page-break-inside: avoid;
+}
+pre code { background: none; padding: 0; font-size: 9.5pt; }
+table {
+  width: 100%; border-collapse: collapse; font-size: 9.5pt;
+  margin: 0 0 12pt; page-break-inside: avoid;
+}
+th, td { border: 1px solid #c9d2dc; padding: 4pt 6pt; text-align: left; vertical-align: top; }
+th { background: #eef3f8; font-weight: bold; }
+em { font-style: italic; }
+blockquote {
+  margin: 0 0 12pt; padding: 8pt 12pt;
+  background: #f7f9fb; border-left: 3pt solid #1b5e8c;
+  page-break-inside: avoid; text-align: justify;
+}
+figure { margin: 10pt 0 4pt; page-break-inside: avoid; text-align: center; }
+img { max-width: 100%; border: 1px solid #ccd4de; }
+figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
+</style>
+</head>
+<body>
+<h1>Revisi Use Case Diagram</h1>
+<h2>Penyesuaian Pemodelan terhadap Sistem yang Dibangun</h2>
+<p>Dokumen ini memuat perbaikan use case diagram pada Bab IV bagian C.1. Penulis menyusun dokumen ini setelah dosen pembimbing menyatakan bahwa use case diagram sebelumnya belum tepat. Penulis membandingkan diagram tersebut dengan purwarupa yang telah dibangun, kemudian memperbaiki setiap ketidaksesuaian yang ditemukan.</p>
+<p>Diagram yang direvisi merupakan diagram pada halaman 48 berkas <code>Bab4 andweb.pdf</code>, sedangkan deskripsi use case yang menyertainya terdapat pada halaman 49 sampai 59 berkas yang sama.</p>
+<hr>
+<h2>A. Dasar Revisi</h2>
+<p>Penulis melakukan revisi atas dua landasan. Pertama, use case diagram wajib menggambarkan fungsi yang benar-benar tersedia pada sistem, bukan fungsi yang direncanakan saja. Kedua, penggunaan relasi antar use case wajib mengikuti kaidah Unified Modeling Language, khususnya kaidah arah relasi <code>«include»</code>, relasi <code>«extend»</code>, dan relasi generalisasi.</p>
+<p>Penulis memeriksa kesesuaian tersebut melalui tiga sumber. Penulis membaca berkas pengendali (<em>controller</em>) pada direktori <code>app/controllers</code>, memeriksa daftar rute pada berkas <code>config/routes.rb</code>, lalu menjalankan pengujian hak akses pada berkas <code>spec/requests/authorization_spec.rb</code>. Ketiga sumber tersebut menunjukkan kewenangan setiap aktor secara pasti.</p>
+<hr>
+<h2>B. Temuan Ketidaksesuaian</h2>
+<p>Penulis menemukan tujuh ketidaksesuaian antara use case diagram sebelumnya dan sistem yang dibangun. Tabel berikut merangkum ketujuh temuan tersebut.</p>
+<table><thead><tr><th>No.</th><th>Aspek</th><th>Keadaan pada diagram sebelumnya</th><th>Keadaan pada sistem yang dibangun</th><th>Tindakan perbaikan</th></tr></thead><tbody><tr><td>1</td><td>Relasi <code>«include»</code></td><td>UC-07 menyertakan UC-06</td><td>Kedua use case dijalankan melalui tombol yang berbeda, dan UC-07 menolak berjalan bila UC-06 belum menghasilkan matriks keputusan</td><td>Relasi dihapus, lalu hubungan keduanya dinyatakan sebagai prasyarat pada deskripsi use case</td></tr><tr><td>2</td><td>Arah relasi <code>«extend»</code></td><td>Anak panah mengarah dari UC-08 ke UC-10</td><td>UC-10 merupakan perluasan pilihan dari UC-08, karena tombol cetak laporan berada pada halaman papan peringkat</td><td>Arah anak panah dibalik menjadi dari UC-10 ke UC-08</td></tr><tr><td>3</td><td>Hubungan antar aktor</td><td>Super Admin dan Admin Panitia digambarkan sebagai dua aktor yang tidak berhubungan</td><td>Super Admin memperoleh seluruh kewenangan Admin Panitia melalui metode <code>runs_topsis?</code> pada model <code>User</code></td><td>Relasi generalisasi ditambahkan dari Super Admin ke Admin Panitia</td></tr><tr><td>4</td><td>Aktor pada UC-09</td><td>Hanya Peserta</td><td>Admin Panitia dan Super Admin juga dapat membuka rincian skor peserta mana pun untuk keperluan verifikasi</td><td>Asosiasi Admin Panitia ke UC-09 ditambahkan</td></tr><tr><td>5</td><td>Pengelolaan aturan event</td><td>Tidak dimodelkan</td><td>Sistem menyediakan halaman pengubahan dua belas parameter regulasi melalui <code>EventsController</code></td><td>Use case UC-11 Kelola Aturan Event ditambahkan</td></tr><tr><td>6</td><td>Pencatatan log secara manual</td><td>Tidak dimodelkan, karena UC-05 hanya mencakup pengunggahan berkas</td><td>Sistem menyediakan formulir pencatatan log per baris melalui <code>ActivityLogsController</code></td><td>Use case UC-12 Catat Log Aktivitas Manual ditambahkan</td></tr><tr><td>7</td><td>Penyajian rincian komputasi</td><td>Tidak dimodelkan</td><td>Sistem selalu menampilkan keenam tahapan perhitungan setelah UC-07 selesai, dan halaman tersebut juga dapat dibuka kembali melalui riwayat</td><td>Use case UC-13 Lihat Rincian Komputasi ditambahkan, lalu dihubungkan dengan UC-07 melalui relasi <code>«include»</code></td></tr></tbody></table>
+<h3>1. Penjelasan temuan pertama</h3>
+<p>Diagram sebelumnya menghubungkan UC-07 Hitung Metode TOPSIS dengan UC-06 Pre-processing Data melalui relasi <code>«include»</code>. Kaidah Unified Modeling Language menyatakan bahwa relasi <code>«include»</code> menandakan use case dasar selalu menjalankan use case yang disertakan pada setiap pelaksanaannya. Sistem yang dibangun tidak berperilaku demikian. Admin Panitia menjalankan pre-processing melalui tombol <strong>Jalankan pre-processing</strong> pada halaman tersendiri, kemudian menjalankan perhitungan TOPSIS melalui tombol <strong>Hitung TOPSIS</strong> pada halaman yang lain. Sistem bahkan menolak perhitungan TOPSIS dan mengarahkan pengguna kembali ke halaman pre-processing apabila matriks keputusan belum terbentuk. Hubungan keduanya karena itu merupakan prasyarat, bukan penyertaan. Penulis menghapus relasi tersebut, lalu mencantumkan prasyaratnya pada bagian <em>Precondition</em> deskripsi UC-07.</p>
+<h3>2. Penjelasan temuan kedua</h3>
+<p>Kaidah Unified Modeling Language menyatakan bahwa anak panah relasi <code>«extend»</code> mengarah dari use case perluasan menuju use case dasar. Diagram sebelumnya menggambarkan anak panah dari UC-08 menuju UC-10, sehingga maknanya menjadi papan peringkat merupakan perluasan dari cetak laporan. Sistem yang dibangun menempatkan tombol <strong>Cetak PDF</strong> dan <strong>Export Excel</strong> pada halaman papan peringkat, sehingga pencetakan laporan merupakan perluasan pilihan dari penampilan papan peringkat. Penulis membalik arah anak panah tersebut menjadi dari UC-10 menuju UC-08.</p>
+<h3>3. Penjelasan temuan ketiga</h3>
+<p>Model <code>User</code> pada sistem menetapkan metode <code>runs_topsis?</code> bernilai benar bagi peran Super Admin maupun Admin Panitia. Super Admin karena itu dapat mengelola peserta, mengimpor log aktivitas, menjalankan pre-processing, menghitung TOPSIS, serta mencetak laporan, sama seperti Admin Panitia. Diagram sebelumnya menghubungkan Super Admin hanya dengan UC-02 dan UC-03, sehingga kewenangan tersebut tidak tergambar. Penulis menambahkan relasi generalisasi dari Super Admin menuju Admin Panitia. Relasi tersebut menyatakan Super Admin mewarisi seluruh kemampuan Admin Panitia, sehingga penulis tidak perlu menggambar ulang sepuluh garis asosiasi yang sama.</p>
+<h3>4. Penjelasan temuan keempat sampai ketujuh</h3>
+<p>Penulis menambahkan asosiasi Admin Panitia ke UC-09 karena berkas <code>ScoresController</code> mengizinkan pengguna dengan kewenangan perhitungan membuka rincian skor peserta mana pun. Ketentuan tersebut diperlukan agar panitia dapat memverifikasi skor peserta yang mengajukan sanggahan.</p>
+<p>Penulis menambahkan tiga use case baru karena ketiga fungsi tersebut sudah tersedia pada sistem, namun belum tergambar pada diagram sebelumnya. UC-11 Kelola Aturan Event mengelola dua belas parameter regulasi, misalnya target poin bulanan, kuota poin harian, dan batas hari olahraga beruntun. UC-12 Catat Log Aktivitas Manual mencatat log aktivitas satu per satu, dan fungsi tersebut melengkapi UC-05 yang hanya menangani pengunggahan berkas. UC-13 Lihat Rincian Komputasi menampilkan keenam tahapan perhitungan TOPSIS, dan sistem selalu menampilkannya setelah UC-07 selesai dijalankan.</p>
+<hr>
+<h2>C. Use Case Diagram Hasil Revisi</h2>
+<figure><img src="../gambar/18-use-case-revisi.png" alt="Use case diagram hasil revisi"></figure>
+<p><strong>Gambar 4. 1</strong> Use Case Diagram Sistem Pendukung Keputusan SEBUSE</p>
+<p>Diagram tersebut memuat tiga aktor, tiga belas use case, satu relasi generalisasi, satu relasi <code>«include»</code>, dan satu relasi <code>«extend»</code>. Batas sistem digambarkan sebagai persegi yang membatasi seluruh use case, sedangkan ketiga aktor berada di luar batas tersebut.</p>
+<hr>
+<h2>D. Daftar Use Case setelah Revisi</h2>
+<p>Tabel berikut memuat ketiga belas use case beserta aktor utama dan berkas pengendali yang mewujudkannya pada sistem.</p>
+<table><thead><tr><th>Kode</th><th>Nama use case</th><th>Aktor utama</th><th>Berkas pengendali</th></tr></thead><tbody><tr><td>UC-01</td><td>Login</td><td>Admin Panitia, Peserta, Super Admin</td><td><code>SessionsController</code></td></tr><tr><td>UC-02</td><td>Kelola Data Pengguna</td><td>Super Admin</td><td><code>UsersController</code></td></tr><tr><td>UC-03</td><td>Kelola Kriteria dan Bobot</td><td>Super Admin</td><td><code>CriteriaController</code></td></tr><tr><td>UC-04</td><td>Kelola Data Peserta</td><td>Admin Panitia</td><td><code>ParticipantsController</code></td></tr><tr><td>UC-05</td><td>Impor Log Aktivitas</td><td>Admin Panitia</td><td><code>ActivityLogImportsController</code></td></tr><tr><td>UC-06</td><td>Pre-processing Data</td><td>Admin Panitia</td><td><code>PreprocessingsController</code></td></tr><tr><td>UC-07</td><td>Hitung Metode TOPSIS</td><td>Admin Panitia</td><td><code>TopsisRunsController</code></td></tr><tr><td>UC-08</td><td>Lihat Papan Peringkat</td><td>Admin Panitia, Peserta</td><td><code>LeaderboardsController</code></td></tr><tr><td>UC-09</td><td>Lihat Detail Skor Individu</td><td>Peserta, Admin Panitia</td><td><code>ScoresController</code></td></tr><tr><td>UC-10</td><td>Cetak Laporan Peringkat</td><td>Admin Panitia</td><td><code>ReportsController</code></td></tr><tr><td>UC-11</td><td>Kelola Aturan Event</td><td>Admin Panitia</td><td><code>EventsController</code></td></tr><tr><td>UC-12</td><td>Catat Log Aktivitas Manual</td><td>Admin Panitia</td><td><code>ActivityLogsController</code></td></tr><tr><td>UC-13</td><td>Lihat Rincian Komputasi</td><td>Admin Panitia</td><td><code>TopsisRunsController</code></td></tr></tbody></table>
+<p>Kewenangan Super Admin tidak dituliskan ulang pada setiap baris, karena relasi generalisasi pada diagram sudah menyatakan Super Admin mewarisi seluruh kewenangan Admin Panitia.</p>
+<hr>
+<h2>E. Matriks Aktor terhadap Use Case</h2>
+<p>Tabel berikut memperjelas kewenangan setiap aktor. Tanda centang menyatakan aktor tersebut dapat menjalankan use case yang bersangkutan.</p>
+<table><thead><tr><th>Use case</th><th>Super Admin</th><th>Admin Panitia</th><th>Peserta</th></tr></thead><tbody><tr><td>UC-01 Login</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>UC-02 Kelola Data Pengguna</td><td>✓</td><td>–</td><td>–</td></tr><tr><td>UC-03 Kelola Kriteria dan Bobot</td><td>✓</td><td>–</td><td>–</td></tr><tr><td>UC-04 Kelola Data Peserta</td><td>✓</td><td>✓</td><td>–</td></tr><tr><td>UC-05 Impor Log Aktivitas</td><td>✓</td><td>✓</td><td>–</td></tr><tr><td>UC-06 Pre-processing Data</td><td>✓</td><td>✓</td><td>–</td></tr><tr><td>UC-07 Hitung Metode TOPSIS</td><td>✓</td><td>✓</td><td>–</td></tr><tr><td>UC-08 Lihat Papan Peringkat</td><td>✓</td><td>✓</td><td>✓</td></tr><tr><td>UC-09 Lihat Detail Skor Individu</td><td>seluruh peserta</td><td>seluruh peserta</td><td>miliknya saja</td></tr><tr><td>UC-10 Cetak Laporan Peringkat</td><td>✓</td><td>✓</td><td>–</td></tr><tr><td>UC-11 Kelola Aturan Event</td><td>✓</td><td>✓</td><td>–</td></tr><tr><td>UC-12 Catat Log Aktivitas Manual</td><td>✓</td><td>✓</td><td>–</td></tr><tr><td>UC-13 Lihat Rincian Komputasi</td><td>✓</td><td>✓</td><td>–</td></tr></tbody></table>
+<p>Tanda centang pada kolom Super Admin untuk UC-04 sampai UC-13 berasal dari relasi generalisasi, bukan dari asosiasi yang digambar tersendiri.</p>
+<hr>
+<h2>F. Relasi antar Use Case</h2>
+<h3>1. Relasi generalisasi</h3>
+<p>Penulis menghubungkan Super Admin dengan Admin Panitia melalui relasi generalisasi. Anak panah bermata segitiga kosong mengarah dari Super Admin menuju Admin Panitia. Relasi tersebut menyatakan Super Admin merupakan pengkhususan dari Admin Panitia, sehingga Super Admin mewarisi seluruh kemampuan Admin Panitia dan menambahkan kemampuan pengelolaan pengguna serta pengelolaan bobot kriteria.</p>
+<h3>2. Relasi <code>«include»</code></h3>
+<p>Penulis menghubungkan UC-07 dengan UC-13 melalui relasi <code>«include»</code>. Anak panah putus-putus mengarah dari UC-07 menuju UC-13. Relasi tersebut menyatakan UC-07 selalu menjalankan UC-13 pada setiap pelaksanaannya. Sistem mewujudkan ketentuan itu dengan mengarahkan pengguna ke halaman rincian komputasi segera setelah perhitungan selesai.</p>
+<h3>3. Relasi <code>«extend»</code></h3>
+<p>Penulis menghubungkan UC-10 dengan UC-08 melalui relasi <code>«extend»</code>. Anak panah putus-putus mengarah dari UC-10 menuju UC-08. Relasi tersebut menyatakan UC-10 merupakan perluasan pilihan dari UC-08. Admin Panitia dapat membuka papan peringkat tanpa mencetak laporan, namun tidak dapat mencetak laporan tanpa adanya hasil perhitungan yang ditampilkan pada papan peringkat.</p>
+<hr>
+<h2>G. Deskripsi Use Case Baru</h2>
+<p>Penulis menyusun ketiga deskripsi berikut mengikuti bentuk yang sudah dipakai pada Bab IV bagian C.1.</p>
+<h3>1. Use Case Description Form Aturan Event (UC-11)</h3>
+<table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Use case name</strong></td><td>Kelola Aturan Event</td></tr><tr><td><strong>Scenario</strong></td><td>Mengubah parameter regulasi penilaian yang dipakai mesin pre-processing</td></tr><tr><td><strong>Trigering Event</strong></td><td>Menekan tombol Simpan Aturan</td></tr><tr><td><strong>Brief Description</strong></td><td>Suatu use case yang berfungsi menyesuaikan dua belas parameter regulasi event, meliputi target poin bulanan, kuota poin harian, syarat mingguan, batas hari olahraga beruntun, dan besar penalti, tanpa mengubah kode program.</td></tr><tr><td><strong>Actors</strong></td><td>Admin Panitia</td></tr><tr><td><strong>Stake Holders</strong></td><td>Admin Panitia, Peserta, Manajemen Perusahaan</td></tr><tr><td><strong>Precondition</strong></td><td>Admin Panitia telah login dan membuka halaman Event</td></tr><tr><td><strong>Post Condition</strong></td><td>Parameter regulasi tersimpan dan langsung dipakai pada pre-processing berikutnya</td></tr></tbody></table>
+<p><strong>Flows Of Activity</strong></p>
+<table><thead><tr><th>Actors</th><th>System</th></tr></thead><tbody><tr><td>1. Memilih menu Event, lalu menekan Ubah aturan</td><td>1.1 Menampilkan formulir parameter regulasi beserta nilai yang berlaku</td></tr><tr><td>2. Mengubah nilai parameter yang diperlukan</td><td></td></tr><tr><td>3. Menekan tombol Simpan Aturan</td><td>3.1 Memvalidasi setiap parameter agar bernilai lebih besar dari nol&lt;br&gt;3.2 Jika data valid, sistem menyimpan parameter dan menampilkan halaman event&lt;br&gt;3.3 Jika data tidak valid, sistem menampilkan pesan kesalahan pada formulir</td></tr></tbody></table>
+<h3>2. Use Case Description Form Catat Log Manual (UC-12)</h3>
+<table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Use case name</strong></td><td>Catat Log Aktivitas Manual</td></tr><tr><td><strong>Scenario</strong></td><td>Mencatat satu baris log aktivitas fisik peserta melalui formulir</td></tr><tr><td><strong>Trigering Event</strong></td><td>Menekan tombol Simpan Log</td></tr><tr><td><strong>Brief Description</strong></td><td>Suatu use case yang berfungsi mencatat log aktivitas satu per satu, dipakai untuk penyesuaian data atau untuk peserta yang datanya tidak tercakup pada berkas rekap.</td></tr><tr><td><strong>Actors</strong></td><td>Admin Panitia</td></tr><tr><td><strong>Stake Holders</strong></td><td>Admin Panitia, Peserta</td></tr><tr><td><strong>Precondition</strong></td><td>Admin Panitia telah login dan membuka daftar log aktivitas seorang peserta</td></tr><tr><td><strong>Post Condition</strong></td><td>Satu baris log aktivitas tersimpan dengan penanda sumber manual</td></tr></tbody></table>
+<p><strong>Flows Of Activity</strong></p>
+<table><thead><tr><th>Actors</th><th>System</th></tr></thead><tbody><tr><td>1. Menekan tombol Catat aktivitas</td><td>1.1 Menampilkan formulir log aktivitas</td></tr><tr><td>2. Mengisi tanggal, jenis aktivitas, poin, jarak, dan tautan bukti</td><td></td></tr><tr><td>3. Menekan tombol Simpan Log</td><td>3.1 Memvalidasi kelengkapan dan kewajaran nilai yang diisikan&lt;br&gt;3.2 Jika data valid, sistem menyimpan log beserta penanda sumber manual&lt;br&gt;3.3 Jika data tidak valid, sistem menampilkan pesan kesalahan</td></tr></tbody></table>
+<h3>3. Use Case Description Form Rincian Komputasi (UC-13)</h3>
+<table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Use case name</strong></td><td>Lihat Rincian Komputasi</td></tr><tr><td><strong>Scenario</strong></td><td>Menampilkan keenam tahapan perhitungan TOPSIS beserta rumusnya</td></tr><tr><td><strong>Trigering Event</strong></td><td>Selesainya perhitungan TOPSIS, atau menekan tautan Rincian komputasi pada riwayat</td></tr><tr><td><strong>Brief Description</strong></td><td>Suatu use case yang berfungsi menyajikan matriks keputusan, matriks ternormalisasi, matriks terbobot, solusi ideal, jarak Euclidean, dan nilai preferensi dari cuplikan yang tersimpan pada saat perhitungan dijalankan.</td></tr><tr><td><strong>Actors</strong></td><td>Admin Panitia</td></tr><tr><td><strong>Stake Holders</strong></td><td>Admin Panitia, Peserta, Manajemen Perusahaan</td></tr><tr><td><strong>Precondition</strong></td><td>Perhitungan TOPSIS telah dijalankan sekurang-kurangnya satu kali</td></tr><tr><td><strong>Post Condition</strong></td><td>Seluruh tahapan perhitungan tersaji beserta bobot yang dipakai saat eksekusi</td></tr></tbody></table>
+<p><strong>Flows Of Activity</strong></p>
+<table><thead><tr><th>Actors</th><th>System</th></tr></thead><tbody><tr><td>1. Menyelesaikan UC-07, atau memilih satu baris pada riwayat perhitungan</td><td>1.1 Mengambil cuplikan perhitungan dari tabel <code>topsis_runs</code></td></tr><tr><td></td><td>1.2 Menampilkan matriks X, R, dan Y secara berurutan</td></tr><tr><td></td><td>1.3 Menampilkan solusi ideal positif dan negatif</td></tr><tr><td></td><td>1.4 Menampilkan jarak Euclidean, nilai preferensi, dan peringkat setiap peserta</td></tr></tbody></table>
+<hr>
+<h2>H. Penyesuaian Deskripsi Use Case Lama</h2>
+<p>Penulis menyesuaikan empat deskripsi use case agar selaras dengan diagram hasil revisi. Tabel berikut memuat kalimat sebelum dan sesudah penyesuaian.</p>
+<table><thead><tr><th>Use case</th><th>Bagian</th><th>Kalimat sebelumnya</th><th>Kalimat setelah penyesuaian</th></tr></thead><tbody><tr><td>UC-05</td><td>Use case name</td><td>Import Log Activities</td><td>Impor Log Aktivitas</td></tr><tr><td>UC-05</td><td>Brief Description</td><td>Memuat data mentah pencapaian olahraga peserta ke dalam sistem</td><td>Memuat data mentah pencapaian olahraga seluruh peserta melalui satu berkas rekap berformat CSV, XLSX, atau XLS, dengan pencocokan peserta melalui kolom NIP</td></tr><tr><td>UC-06</td><td>Actors</td><td>System (di-trigger oleh Admin Panitia)</td><td>Admin Panitia</td></tr><tr><td>UC-07</td><td>Precondition</td><td>Matriks Keputusan (X) hasil pre-processing dan bobot kriteria telah siap di sistem</td><td>Matriks keputusan hasil UC-06 telah terbentuk, dan akumulasi bobot kriteria bernilai tepat 100%</td></tr><tr><td>UC-09</td><td>Actors</td><td>Peserta</td><td>Peserta, Admin Panitia</td></tr><tr><td>UC-09</td><td>Brief Description</td><td>Menyajikan breakdown evaluasi mandiri skor per kriteria milik akun peserta terhubung</td><td>Menyajikan rincian skor sepuluh kriteria. Peserta hanya dapat membuka rincian miliknya sendiri, sedangkan Admin Panitia dapat membuka rincian peserta mana pun untuk keperluan verifikasi</td></tr></tbody></table>
+<p>Penulis mengubah aktor UC-06 dari System menjadi Admin Panitia karena kaidah Unified Modeling Language menempatkan sistem sebagai pelaksana, bukan sebagai aktor. Pre-processing dijalankan atas perintah Admin Panitia, sehingga Admin Panitia merupakan aktor yang tepat.</p>
+<hr>
+<h2>I. Fungsi yang Sengaja Tidak Dimodelkan</h2>
+<p>Penulis tidak memodelkan tiga fungsi berikut sebagai use case tersendiri, dan menyampaikan alasannya secara terbuka agar pemodelan tetap dapat dipertanggungjawabkan.</p>
+<table><thead><tr><th>Fungsi</th><th>Alasan</th></tr></thead><tbody><tr><td>Halaman dasbor</td><td>Halaman tersebut menyajikan ringkasan keadaan event beserta tautan navigasi, dan tidak mewakili satu tujuan pengguna yang berdiri sendiri</td></tr><tr><td>Halaman riwayat perhitungan</td><td>Halaman tersebut berfungsi sebagai daftar navigasi menuju UC-13, sehingga tercakup di dalamnya</td></tr><tr><td>Penampilan daftar kriteria bagi Admin Panitia dan Peserta</td><td>Kedua peran hanya membaca daftar tersebut sebagai rujukan, sedangkan pengelolaannya tetap menjadi kewenangan Super Admin pada UC-03</td></tr></tbody></table>
+<hr>
+<h2>J. Bahan Siap Tempel untuk Laporan</h2>
+<h3>1. Yang perlu diganti pada Bab IV</h3>
+<table><thead><tr><th>Bagian</th><th>Tindakan</th></tr></thead><tbody><tr><td>C.1, gambar use case diagram halaman 48</td><td>Diganti dengan <code>docs/gambar/18-use-case-revisi.png</code></td></tr><tr><td>C.1, paragraf setelah gambar</td><td>Ditambahi penjelasan tiga aktor, tiga belas use case, dan ketiga relasi sebagaimana bagian C dan F dokumen ini</td></tr><tr><td>C.1, deskripsi use case</td><td>Ditambahi tiga deskripsi baru dari bagian G, dan disesuaikan menurut tabel bagian H</td></tr></tbody></table>
+<h3>2. Entri Daftar Gambar</h3>
+<pre><code>Gambar 4. 1 Use Case Diagram Sistem Pendukung Keputusan SEBUSE</code></pre>
+<h3>3. Pengaruh terhadap penomoran gambar</h3>
+<p>Penulis menyarankan penomoran gambar Bab IV tetap seperti semula. Activity diagram dan sequence diagram cukup disajikan untuk UC-01 sampai UC-10, lalu penulis menyatakan pada teks bahwa UC-11 sampai UC-13 merupakan fungsi pendukung yang dimodelkan pada use case diagram dan dijelaskan melalui deskripsi use case. Dengan pilihan tersebut, penomoran gambar tidak bergeser.</p>
+<table><thead><tr><th>Rentang</th><th>Isi</th></tr></thead><tbody><tr><td>Gambar 4. 1</td><td>Use case diagram hasil revisi</td></tr><tr><td>Gambar 4. 2 – 4. 11</td><td>Activity diagram UC-01 sampai UC-10</td></tr><tr><td>Gambar 4. 12 – 4. 21</td><td>Sequence diagram UC-01 sampai UC-10</td></tr><tr><td>Gambar 4. 22 – 4. 23</td><td>Class diagram dan Entity Relationship Diagram</td></tr><tr><td>Gambar 4. 24 – 4. 37</td><td>Implementasi antarmuka</td></tr></tbody></table>
+<p>Apabila dosen pembimbing meminta activity diagram dan sequence diagram untuk ketiga use case tambahan, penulis perlu menambahkan enam gambar. Seluruh penomoran gambar setelah sequence diagram akan bergeser sebanyak enam nomor.</p>
+<hr>
+<h2>K. Berkas Sumber Diagram</h2>
+<p>Penulis menggambar diagram hasil revisi melalui berkas <code>script/build_use_case_diagram.rb</code>. Berkas tersebut menghitung seluruh titik koordinat, lalu menghasilkan <code>docs/diagram/use-case.svg</code>. Penulis dapat menyesuaikan tata letak, menambah use case, atau mengubah asosiasi dengan menyunting tetapan pada bagian awal berkas tersebut, kemudian menjalankan perintah berikut:</p>
+<pre><code>ruby script/build_use_case_diagram.rb</code></pre>
+<p>Berkas SVG dapat dibuka langsung pada peramban, dan dapat pula disisipkan ke dalam dokumen pengolah kata tanpa kehilangan ketajaman gambar.</p>
+</body>
+</html>

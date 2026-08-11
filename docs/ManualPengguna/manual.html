@@ -100,14 +100,14 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p><strong>Langkah:</strong></p>
 <ol><li>Buka alamat <code>http://localhost:3000</code>. Sistem menampilkan halaman login.</li><li>Masukkan alamat email dan kata sandi.</li><li>Tekan tombol <strong>Masuk</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem memverifikasi kredensial ke basis data, membuat sesi pengguna, lalu mengarahkan ke dasbor sesuai peran. Apabila kredensial tidak valid, sistem menampilkan pesan kesalahan dan pengguna tetap di halaman login.</p>
-<figure><img src="gambar/01-login.png" alt="Halaman login"></figure>
+<figure><img src="../gambar/01-login.png" alt="Halaman login"></figure>
 <p><strong>Gambar 4. 24</strong> Tampilan Halaman Login (UC-01)</p>
 <hr>
 <h3>2. Dasbor</h3>
 <p><strong>Aktor:</strong> seluruh peran</p>
 <p>Dasbor menampilkan ringkasan keadaan event: jumlah peserta, jumlah peserta yang matriks keputusannya sudah terbentuk, jumlah baris log aktivitas, serta total bobot kriteria beserta penanda kesiapan perhitungan. Panel kanan menampilkan lima peringkat teratas hasil perhitungan terakhir dan tautan langkah berikutnya.</p>
 <p>Isi dasbor menyesuaikan peran pengguna. Peserta hanya memperoleh tautan menuju papan peringkat dan rincian skor pribadinya.</p>
-<figure><img src="gambar/02-dasbor-panitia.png" alt="Dasbor Admin Panitia"></figure>
+<figure><img src="../gambar/02-dasbor-panitia.png" alt="Dasbor Admin Panitia"></figure>
 <p><strong>Gambar 4. 25</strong> Tampilan Dasbor Admin Panitia</p>
 <hr>
 <h3>3. UC-02 Kelola Data Pengguna</h3>
@@ -115,7 +115,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p><strong>Langkah:</strong></p>
 <ol><li>Pilih menu <strong>Pengguna</strong>.</li><li>Tekan <strong>Tambah pengguna</strong> untuk membuat akun baru, atau <strong>Ubah</strong> pada baris akun yang akan disunting.</li><li>Isi nama lengkap, alamat email, peran, dan kata sandi.</li><li>Tekan <strong>Simpan pengguna</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem memvalidasi kelengkapan data serta keunikan alamat email, lalu menyimpannya ke tabel <code>users</code>. Pada penyuntingan, kolom kata sandi yang dibiarkan kosong tidak mengubah kata sandi lama. Akun yang sedang digunakan tidak dapat dihapus.</p>
-<figure><img src="gambar/04-data-pengguna.png" alt="Kelola data pengguna"></figure>
+<figure><img src="../gambar/04-data-pengguna.png" alt="Kelola data pengguna"></figure>
 <p><strong>Gambar 4. 26</strong> Tampilan Kelola Data Pengguna (UC-02)</p>
 <hr>
 <h3>4. UC-03 Kelola Kriteria dan Bobot</h3>
@@ -124,7 +124,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <ol><li>Pilih menu <strong>Kriteria</strong>.</li><li>Sunting nilai persentase bobot pada kolom <strong>Bobot (%)</strong>.</li><li>Tekan <strong>Simpan kriteria &amp; bobot</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem memeriksa akumulasi seluruh bobot. Apabila totalnya tepat 100%, perubahan disimpan. Apabila tidak, seluruh perubahan dibatalkan dan sistem menampilkan peringatan agar bobot disesuaikan kembali.</p>
 <p>Pemeriksaan dilakukan atas keseluruhan bobot, bukan satu per satu, karena satu bobot tidak dapat dinilai sahih secara sendirian. Penanda di kanan atas halaman menunjukkan status kesiapan perhitungan.</p>
-<figure><img src="gambar/03-kriteria-bobot.png" alt="Kelola kriteria dan bobot"></figure>
+<figure><img src="../gambar/03-kriteria-bobot.png" alt="Kelola kriteria dan bobot"></figure>
 <p><strong>Gambar 4. 27</strong> Tampilan Kelola Kriteria dan Bobot (UC-03)</p>
 <hr>
 <h3>5. UC-04 Kelola Data Peserta</h3>
@@ -132,7 +132,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p><strong>Langkah:</strong></p>
 <ol><li>Pilih menu <strong>Peserta</strong>.</li><li>Tekan <strong>Tambah peserta</strong>.</li><li>Isi kode alternatif, NIP, nama, dan departemen. Kode alternatif berikutnya diusulkan otomatis oleh sistem.</li><li>Pilih akun peserta pada kolom <strong>Akun peserta</strong> agar karyawan tersebut dapat membuka rincian skornya sendiri.</li><li>Tekan <strong>Simpan peserta</strong>.</li></ol>
 <p><strong>Hasil:</strong> Data peserta tersimpan sebagai alternatif penilaian. Kolom <strong>Skor terisi</strong> menunjukkan kelengkapan matriks keputusan peserta tersebut.</p>
-<figure><img src="gambar/05-data-peserta.png" alt="Kelola data peserta"></figure>
+<figure><img src="../gambar/05-data-peserta.png" alt="Kelola data peserta"></figure>
 <p><strong>Gambar 4. 28</strong> Tampilan Kelola Data Peserta (UC-04)</p>
 <hr>
 <h3>6. UC-05 Import Log Activities</h3>
@@ -145,7 +145,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <table><thead><tr><th>Kolom</th><th>Sifat</th><th>Keterangan</th><th>Contoh</th></tr></thead><tbody><tr><td><code>nip</code></td><td>wajib</td><td>NIP peserta, harus sudah terdaftar pada event</td><td><code>CSU-0001</code></td></tr><tr><td><code>tanggal</code></td><td>wajib</td><td>Tanggal aktivitas, format YYYY-MM-DD</td><td><code>2026-03-02</code></td></tr><tr><td><code>jenis</code></td><td>wajib</td><td><code>cardio</code>, <code>strength</code>, <code>long_run</code>, atau <code>fun_sport</code></td><td><code>cardio</code></td></tr><tr><td><code>poin</code></td><td>wajib</td><td>Poin aktivitas</td><td><code>2</code></td></tr><tr><td><code>jarak_km</code></td><td>opsional</td><td>Wajib untuk Long Run agar ketuntasannya terhitung</td><td><code>10.5</code></td></tr><tr><td><code>tautan_bukti</code></td><td>opsional</td><td>Tautan Strava atau foto Timestamp</td><td><code>https://...</code></td></tr><tr><td><code>bukti_valid</code></td><td>opsional</td><td>Penilaian panitia atas bukti, diisi <code>ya</code> atau <code>tidak</code></td><td><code>ya</code></td></tr></tbody></table>
 <p>Penulisan jenis aktivitas tidak membedakan huruf besar dan kecil, serta menerima beberapa bentuk umum seperti <code>Kardio</code>, <code>Long Run</code>, dan <code>Fun Sports</code>.</p>
 <p><strong>Pembatalan batch.</strong> Setiap unggahan tercatat pada panel <strong>Riwayat impor</strong> beserta jumlah baris dan rentang tanggalnya. Tombol <strong>Batalkan batch</strong> menghapus seluruh baris dari satu unggahan tanpa mengganggu data dari unggahan lain.</p>
-<figure><img src="gambar/13-impor-log.png" alt="Import log aktivitas"></figure>
+<figure><img src="../gambar/13-impor-log.png" alt="Import log aktivitas"></figure>
 <p><strong>Gambar 4. 29</strong> Tampilan Import Log Activities (UC-05)</p>
 <hr>
 <h3>7. Pencatatan Log Aktivitas secara Manual</h3>
@@ -153,7 +153,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p><strong>Langkah:</strong></p>
 <ol><li>Pada daftar peserta, tekan <strong>Log aktivitas</strong> pada baris peserta yang dimaksud.</li><li>Tekan <strong>Catat aktivitas</strong>.</li><li>Isi tanggal, jenis aktivitas, poin, jarak (untuk Long Run), dan tautan bukti.</li><li>Tandai <strong>Bukti dinyatakan valid oleh panitia</strong> apabila bukti memenuhi syarat.</li><li>Tekan <strong>Simpan log</strong>.</li></ol>
 <p><strong>Hasil:</strong> Baris log tersimpan sebagai data mentah. Hari yang total poinnya melampaui kuota harian ditandai pada daftar, dan kelebihannya akan dipangkas otomatis saat pre-processing dijalankan.</p>
-<figure><img src="gambar/12-log-aktivitas.png" alt="Log aktivitas peserta"></figure>
+<figure><img src="../gambar/12-log-aktivitas.png" alt="Log aktivitas peserta"></figure>
 <p><strong>Gambar 4. 30</strong> Tampilan Pencatatan Log Aktivitas Peserta</p>
 <hr>
 <h3>8. UC-06 Pre-processing Data</h3>
@@ -163,7 +163,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p><strong>Hasil:</strong> Sistem memangkas kuota poin harian yang melampaui batas, mengonversi setiap kriteria ke skala 0–100 menggunakan rumusnya masing-masing, menghitung penalti pelanggaran aturan beruntun, lalu menyimpan hasilnya sebagai matriks keputusan (X). Panel bawah halaman menampilkan pratinjau matriks tersebut.</p>
 <p>Nilai kriteria C7 tidak ditimpa oleh proses ini karena bersumber dari pengukuran fisik oleh panitia, bukan dari log olahraga.</p>
 <p><strong>Perlakuan terhadap peserta tanpa log aktivitas.</strong> Peserta yang belum memiliki satu pun log aktivitas akan dilewati apabila skornya sudah ada. Ketentuan ini melindungi nilai yang dimasukkan langsung, misalnya data simulasi lima peserta Bab IV yang memang tidak memiliki log aktivitas. Tanpa perlakuan tersebut, menjalankan pre-processing akan mengubah seluruh nilai peserta itu menjadi nol. Peserta yang belum memiliki log maupun skor akan diisi nol beserta catatan "Belum ada log aktivitas".</p>
-<figure><img src="gambar/06-preprocessing.png" alt="Pre-processing data"></figure>
+<figure><img src="../gambar/06-preprocessing.png" alt="Pre-processing data"></figure>
 <p><strong>Gambar 4. 31</strong> Tampilan Pre-processing Data dan Matriks Keputusan (UC-06)</p>
 <hr>
 <h3>9. UC-07 Hitung Metode TOPSIS</h3>
@@ -172,7 +172,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <ol><li>Pilih menu <strong>TOPSIS</strong>.</li><li>Tekan <strong>Hitung TOPSIS</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem menyusun matriks keputusan dari basis data, menjalankan seluruh tahapan TOPSIS, lalu menyimpan hasilnya ke tabel <code>topsis_runs</code> dan <code>ranking_results</code>. Pengguna langsung diarahkan ke halaman rincian komputasi.</p>
 <p>Setiap eksekusi tercatat beserta waktu dan pelaksananya, sehingga riwayat perhitungan dapat ditelusuri.</p>
-<figure><img src="gambar/07-riwayat-topsis.png" alt="Riwayat perhitungan TOPSIS"></figure>
+<figure><img src="../gambar/07-riwayat-topsis.png" alt="Riwayat perhitungan TOPSIS"></figure>
 <p><strong>Gambar 4. 32</strong> Tampilan Riwayat Perhitungan TOPSIS (UC-07)</p>
 <hr>
 <h3>10. Rincian Komputasi TOPSIS</h3>
@@ -180,7 +180,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p>Halaman ini menampilkan keenam tahapan perhitungan secara berurutan beserta rumus yang digunakan:</p>
 <table><thead><tr><th>Langkah</th><th>Keluaran</th><th>Rumus</th></tr></thead><tbody><tr><td>1</td><td>Matriks keputusan (X)</td><td>hasil pre-processing skala 0–100</td></tr><tr><td>2</td><td>Matriks ternormalisasi (R)</td><td>rᵢⱼ = xᵢⱼ / √(Σ xᵢⱼ²)</td></tr><tr><td>3</td><td>Matriks ternormalisasi terbobot (Y)</td><td>yᵢⱼ = wⱼ × rᵢⱼ</td></tr><tr><td>4</td><td>Solusi ideal positif dan negatif</td><td>A⁺ = maks kolom Y, A⁻ = min kolom Y</td></tr><tr><td>5</td><td>Jarak Euclidean</td><td>D⁺ᵢ = √(Σ (yᵢⱼ − y⁺ⱼ)²), D⁻ᵢ = √(Σ (yᵢⱼ − y⁻ⱼ)²)</td></tr><tr><td>6</td><td>Nilai preferensi</td><td>Vᵢ = D⁻ᵢ / (D⁺ᵢ + D⁻ᵢ)</td></tr></tbody></table>
 <p>Seluruh langkah disimpan sebagai cuplikan (<em>snapshot</em>) pada saat eksekusi. Dengan demikian rincian perhitungan dapat ditampilkan tanpa menghitung ulang, dan hasil perhitungan lama tetap dapat diaudit walaupun bobot kriteria diubah setelahnya. Bobot yang dipakai saat eksekusi ditampilkan sebagai penanda pada langkah ketiga.</p>
-<figure><img src="gambar/08-rincian-komputasi.png" alt="Rincian komputasi TOPSIS"></figure>
+<figure><img src="../gambar/08-rincian-komputasi.png" alt="Rincian komputasi TOPSIS"></figure>
 <p><strong>Gambar 4. 33</strong> Tampilan Rincian Komputasi Metode TOPSIS (UC-07)</p>
 <hr>
 <h3>11. UC-08 Lihat Papan Peringkat</h3>
@@ -189,10 +189,10 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <ol><li>Pilih menu <strong>Peringkat</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem mengambil hasil perhitungan terakhir dan menampilkan seluruh peserta terurut dari nilai preferensi tertinggi ke terendah, lengkap dengan jarak solusi ideal positif dan negatif sebagai bentuk transparansi.</p>
 <p>Halaman ini terbuka bagi seluruh peran, sesuai tujuan penelitian dalam menegakkan transparansi hasil kompetisi.</p>
-<figure><img src="gambar/09-papan-peringkat.png" alt="Papan peringkat"></figure>
+<figure><img src="../gambar/09-papan-peringkat.png" alt="Papan peringkat"></figure>
 <p><strong>Gambar 4. 34</strong> Tampilan Papan Peringkat (UC-08)</p>
 <p>Bagi pengguna dengan peran Peserta, sistem menambahkan panel ringkasan peringkat pribadi di bagian atas halaman dan menyorot baris peserta yang bersangkutan pada tabel.</p>
-<figure><img src="gambar/10-peringkat-peserta.png" alt="Papan peringkat dari sudut pandang peserta"></figure>
+<figure><img src="../gambar/10-peringkat-peserta.png" alt="Papan peringkat dari sudut pandang peserta"></figure>
 <p><strong>Gambar 4. 35</strong> Tampilan Papan Peringkat pada Akun Peserta (UC-08)</p>
 <hr>
 <h3>12. UC-09 Lihat Detail Skor Individu</h3>
@@ -201,7 +201,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <ol><li>Pada papan peringkat atau dasbor, tekan <strong>Detail skor</strong>.</li></ol>
 <p><strong>Hasil:</strong> Sistem menampilkan rincian capaian sepuluh kriteria milik peserta beserta bobot, batang capaian, dan catatan evaluasi setiap kriteria. Panel atas menampilkan peringkat, nilai preferensi, serta jarak terhadap kedua solusi ideal.</p>
 <p>Peserta hanya dapat membuka rincian skor miliknya sendiri. Admin Panitia dan Super Admin dapat membuka rincian skor peserta mana pun untuk keperluan verifikasi.</p>
-<figure><img src="gambar/11-detail-skor.png" alt="Detail skor individu"></figure>
+<figure><img src="../gambar/11-detail-skor.png" alt="Detail skor individu"></figure>
 <p><strong>Gambar 4. 36</strong> Tampilan Detail Skor Individu (UC-09)</p>
 <hr>
 <h3>13. UC-10 Cetak Laporan Peringkat</h3>
@@ -213,7 +213,7 @@ figure + p { text-align: center; font-size: 10pt; margin-bottom: 14pt; }
 <p><strong>Isi laporan Excel.</strong> Berkas memuat tiga lembar kerja:</p>
 <table><thead><tr><th>Lembar</th><th>Isi</th></tr></thead><tbody><tr><td>Peringkat</td><td>Keterangan event dan tabel hasil pemeringkatan</td></tr><tr><td>Matriks Keputusan</td><td>Matriks keputusan (X) serta solusi ideal positif dan negatif</td></tr><tr><td>Kriteria</td><td>Sepuluh kriteria beserta jenis dan bobotnya</td></tr></tbody></table>
 <p>Lembar Matriks Keputusan disertakan agar hasil laporan dapat diperiksa ulang secara manual, tidak hanya dipercaya apa adanya.</p>
-<figure><img src="gambar/14-laporan-pdf.png" alt="Laporan peringkat berformat PDF"></figure>
+<figure><img src="../gambar/14-laporan-pdf.png" alt="Laporan peringkat berformat PDF"></figure>
 <p><strong>Gambar 4. 37</strong> Keluaran Laporan Pemeringkatan Berformat PDF (UC-10)</p>
 <hr>
 <h2>G. Rujukan Aturan Penilaian</h2>

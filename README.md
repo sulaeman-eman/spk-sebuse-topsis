@@ -65,8 +65,9 @@ app/services/preprocessing_engine.rb   konversi log mentah ke matriks keputusan
 app/services/topsis_run_creator.rb     jembatan basis data dengan mesin hitung
 app/services/activity_log_import.rb    pembacaan berkas rekap CSV dan Excel
 app/services/report_generator.rb       penyusun laporan PDF dan Excel
-docs/MANUAL_PENGGUNA.md                manual pengguna beserta tangkapan layar
-docs/Manual_Pengguna_SPK_SEBUSE.pdf    manual siap cetak
+docs/ManualPengguna/                   manual pengguna beserta tangkapan layar
+docs/RevisiUseCase/                    use case diagram hasil revisi
+docs/BasisData/                        ERD, class diagram, spesifikasi tabel
 ```
 
 `TopsisEngine` sengaja tidak menyentuh ActiveRecord agar kebenaran
@@ -75,23 +76,30 @@ tanpa membuat satu pun record basis data.
 
 ## Use case yang sudah tersedia
 
+Tiga use case terakhir merupakan hasil revisi pemodelan, karena ketiganya
+sudah tersedia pada sistem namun belum tergambar pada use case diagram
+sebelumnya. Uraiannya ada pada [dokumen revisi](docs/RevisiUseCase/REVISI_USE_CASE.md).
+
 | Kode | Use case | Status |
 |---|---|---|
 | UC-01 | Login | selesai |
 | UC-02 | Kelola Data Pengguna | selesai |
 | UC-03 | Kelola Kriteria dan Bobot | selesai |
 | UC-04 | Kelola Data Peserta | selesai |
-| UC-05 | Import Log Aktivitas | selesai (CSV, XLSX, XLS, dan input manual) |
+| UC-05 | Impor Log Aktivitas | selesai (CSV, XLSX, XLS) |
 | UC-06 | Pre-processing Data | selesai |
 | UC-07 | Hitung Metode TOPSIS | selesai |
 | UC-08 | Lihat Papan Peringkat | selesai |
 | UC-09 | Lihat Detail Skor Individu | selesai |
 | UC-10 | Cetak Laporan Peringkat | selesai (PDF dan Excel) |
+| UC-11 | Kelola Aturan Event | selesai |
+| UC-12 | Catat Log Aktivitas Manual | selesai |
+| UC-13 | Lihat Rincian Komputasi | selesai |
 
 ## Sepuluh kriteria penilaian
 
 Seluruh kriteria bertipe *benefit*. Rumus konversi lengkap beserta contoh
-perhitungannya ada pada [manual pengguna](docs/MANUAL_PENGGUNA.md#g-rujukan-aturan-penilaian).
+perhitungannya ada pada [manual pengguna](docs/ManualPengguna/MANUAL_PENGGUNA.md#g-rujukan-aturan-penilaian).
 
 | Kode | Kriteria | Bobot |
 |---|---|---|
@@ -112,16 +120,18 @@ tanpa mengubah kode.
 
 ## Dokumentasi
 
-- [Manual Pengguna](docs/MANUAL_PENGGUNA.md) — panduan setiap use case, skenario demonstrasi, glosarium, dan tangkapan layar
-- [Manual Pengguna (PDF)](docs/Manual_Pengguna_SPK_SEBUSE.pdf) — versi siap cetak, 32 halaman A4
-- [Perancangan Basis Data dan Kelas](docs/PERANCANGAN_BASIS_DATA.md) — ERD, Class Diagram, dan spesifikasi sembilan tabel
-- [Perancangan Basis Data (PDF)](docs/Perancangan_Basis_Data_SPK_SEBUSE.pdf) — versi siap cetak, 12 halaman A4
+- [Revisi Use Case Diagram](docs/RevisiUseCase/REVISI_USE_CASE.md) — penyesuaian pemodelan terhadap sistem yang dibangun, beserta tiga belas use case dan matriks hak aksesnya
+- [Manual Pengguna](docs/ManualPengguna/MANUAL_PENGGUNA.md) — panduan setiap use case, skenario demonstrasi, glosarium, dan tangkapan layar
+- [Manual Pengguna (PDF)](docs/ManualPengguna/Manual_Pengguna_SPK_SEBUSE.pdf) — versi siap cetak, 32 halaman A4
+- [Perancangan Basis Data dan Kelas](docs/BasisData/PERANCANGAN_BASIS_DATA.md) — ERD, Class Diagram, dan spesifikasi sembilan tabel
+- [Perancangan Basis Data (PDF)](docs/BasisData/Perancangan_Basis_Data_SPK_SEBUSE.pdf) — versi siap cetak, 12 halaman A4
 - [Diagram A4 mendatar (PDF)](docs/Diagram_Perancangan_A4_landscape.pdf) — ERD dan Class Diagram pada halaman mendatar
-- [Draf Bab IV.D](docs/DRAFT_BAB4_D.md) — kelebihan dan kelemahan penelitian, diturunkan dari keadaan purwarupa
-- [Draf Bab V](docs/DRAFT_BAB5.md) — simpulan yang menjawab ketiga tujuan penelitian, beserta saran
+- [Draf Bab IV.D](docs/Draft_Bab4/DRAFT_BAB4_D.md) — kelebihan dan kelemahan penelitian, diturunkan dari keadaan purwarupa
+- [Draf Bab V](docs/Draft_Bab5/DRAFT_BAB5.md) — simpulan yang menjawab ketiga tujuan penelitian, beserta saran
 
 Setiap dokumen memiliki padanan PDF siap cetak pada direktori `docs/`.
 Berkas HTML-nya dihasilkan dari Markdown melalui `ruby script/build_manual.rb`.
 
-Berkas sumber diagram ada di `docs/diagram/` dalam notasi Mermaid, sehingga
-dapat disunting di peramban bila struktur data berubah.
+Berkas sumber diagram ada di `docs/diagram/`. ERD dan class diagram memakai
+notasi Mermaid sehingga dapat disunting di peramban, sedangkan use case
+diagram dihasilkan oleh `script/build_use_case_diagram.rb`.
