@@ -17,7 +17,8 @@ DOCUMENTS = {
   "PERANCANGAN_BASIS_DATA.md" => "perancangan.html",
   "DRAFT_BAB4_D.md" => "draft-bab4-d.html",
   "DRAFT_BAB5.md" => "draft-bab5.html",
-  "REVISI_USE_CASE.md" => "revisi-use-case.html"
+  "REVISI_USE_CASE.md" => "revisi-use-case.html",
+  "DESKRIPSI_USE_CASE.md" => "revisi-deskripsi-use-case.html"
 }.freeze
 
 source_name = ARGV[0] ? File.basename(ARGV[0]) : "MANUAL_PENGGUNA.md"
@@ -53,6 +54,9 @@ end
 # Penulisan sebaris: gambar, tebal, miring, lalu kode sebaris.
 def inline(text)
   escape(text)
+    # Pindah baris di dalam sel tabel ditulis sebagai <br> pada berkas sumber,
+    # sehingga tandanya perlu dipulihkan setelah proses penyandian.
+    .gsub("&lt;br&gt;", "<br>")
     .gsub(/!\[([^\]]*)\]\(([^)]+)\)/) { %(<img src="#{image_src($2)}" alt="#{$1}">) }
     .gsub(/\*\*([^*]+)\*\*/) { "<strong>#{$1}</strong>" }
     .gsub(/(?<!\*)\*([^*\n]+)\*(?!\*)/) { "<em>#{$1}</em>" }
@@ -102,8 +106,13 @@ while index < lines.size
     rows.shift if rows.first && separator_row?(rows.first)
     body = rows.reject { |row| separator_row?(row) }
 
-    html << "<table><thead>#{table_row(head, 'th')}</thead>" \
-            "<tbody>#{body.map { |row| table_row(row, 'td') }.join}</tbody></table>"
+    # Tabel dua lajur bergaya daftar keterangan ditulis dengan baris judul
+    # kosong. Baris tersebut tidak perlu dikeluarkan agar tidak menyisakan
+    # bidang kosong di atas tabel.
+    header_kosong = head.delete("|").strip.empty?
+
+    thead = header_kosong ? "" : "<thead>#{table_row(head, 'th')}</thead>"
+    html << "<table>#{thead}<tbody>#{body.map { |row| table_row(row, 'td') }.join}</tbody></table>"
 
   when /^>\s?/
     quote = []

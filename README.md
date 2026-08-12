@@ -121,6 +121,7 @@ tanpa mengubah kode.
 ## Dokumentasi
 
 - [Revisi Use Case Diagram](docs/RevisiUseCase/REVISI_USE_CASE.md) — penyesuaian pemodelan terhadap sistem yang dibangun, beserta tiga belas use case dan matriks hak aksesnya
+- [Deskripsi Use Case](docs/RevisiUseCase/DESKRIPSI_USE_CASE.md) — ketiga belas deskripsi use case butir a sampai m dalam satu berkas, siap disalin ke laporan
 - [Manual Pengguna](docs/ManualPengguna/MANUAL_PENGGUNA.md) — panduan setiap use case, skenario demonstrasi, glosarium, dan tangkapan layar
 - [Manual Pengguna (PDF)](docs/ManualPengguna/Manual_Pengguna_SPK_SEBUSE.pdf) — versi siap cetak, 32 halaman A4
 - [Perancangan Basis Data dan Kelas](docs/BasisData/PERANCANGAN_BASIS_DATA.md) — ERD, Class Diagram, dan spesifikasi sembilan tabel
