@@ -120,6 +120,7 @@ tanpa mengubah kode.
 
 ## Dokumentasi
 
+- [Revisi Bab IV](docs/RevisiBab4/REVISI_BAB4.md) — **Bab IV utuh** setelah seluruh perbaikan, 37 gambar dan 19 tabel, siap disalin ke laporan
 - [Revisi Use Case Diagram](docs/RevisiUseCase/REVISI_USE_CASE.md) — penyesuaian pemodelan terhadap sistem yang dibangun, beserta tiga belas use case dan matriks hak aksesnya
 - [Deskripsi Use Case](docs/RevisiUseCase/DESKRIPSI_USE_CASE.md) — ketiga belas deskripsi use case butir a sampai m dalam satu berkas, siap disalin ke laporan
 - [Manual Pengguna](docs/ManualPengguna/MANUAL_PENGGUNA.md) — panduan setiap use case, skenario demonstrasi, glosarium, dan tangkapan layar

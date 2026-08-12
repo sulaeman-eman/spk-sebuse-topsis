@@ -18,7 +18,8 @@ DOCUMENTS = {
   "DRAFT_BAB4_D.md" => "draft-bab4-d.html",
   "DRAFT_BAB5.md" => "draft-bab5.html",
   "REVISI_USE_CASE.md" => "revisi-use-case.html",
-  "DESKRIPSI_USE_CASE.md" => "revisi-deskripsi-use-case.html"
+  "DESKRIPSI_USE_CASE.md" => "revisi-deskripsi-use-case.html",
+  "REVISI_BAB4.md" => "revisi-bab4.html"
 }.freeze
 
 source_name = ARGV[0] ? File.basename(ARGV[0]) : "MANUAL_PENGGUNA.md"
