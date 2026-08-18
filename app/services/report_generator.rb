@@ -61,6 +61,13 @@ class ReportGenerator
     @criteria ||= Criterion.ordered.to_a
   end
 
+  # Satu event dapat dihitung berulang kali, dan setiap perhitungan menghasilkan
+  # laporannya sendiri. Nomor urut ini membedakan laporan dari perhitungan yang
+  # satu terhadap laporan dari perhitungan yang lain.
+  def run_sequence
+    @run_sequence ||= event.topsis_runs.order(:executed_at, :id).pluck(:id).index(topsis_run.id).to_i + 1
+  end
+
   # ---------- PDF ----------
 
   def pdf_heading(document)
@@ -77,6 +84,7 @@ class ReportGenerator
       [ "Nama event", event.name ],
       [ "Periode", "#{format_date(event.start_date)} sampai #{format_date(event.end_date)}" ],
       [ "Jumlah peserta", "#{results.size} orang" ],
+      [ "Perhitungan ke", run_sequence.to_s ],
       [ "Waktu perhitungan", format_time(topsis_run.executed_at) ],
       [ "Dihitung oleh", topsis_run.executed_by&.name || "-" ]
     ]
@@ -140,8 +148,10 @@ class ReportGenerator
     document.move_down 24
   end
 
+  # Tempat dan tanggal ditulis lengkap dengan nama hari, mengikuti bentuk
+  # kota, hari, tanggal, tahun, misalnya "Jakarta, Selasa, 18 Agustus 2026".
   def pdf_signature(document)
-    document.text "Jakarta, #{format_date(Date.current)}", size: 9, align: :right
+    document.text "Jakarta, #{format_date_with_day(Date.current)}", size: 9, align: :right
     document.move_down 48
     document.text "Ketua Panitia Event SEBUSE", size: 9, align: :right
     document.text ORGANIZATION_SIGNATURE, size: 9, align: :right
@@ -244,5 +254,6 @@ class ReportGenerator
   def decimal(value) = format("%.4f", value.to_f)
   def percent(value) = "#{(value.to_f * 100).round(2)}%"
   def format_date(date) = I18n.l(date, format: :long)
+  def format_date_with_day(date) = I18n.l(date, format: :with_day)
   def format_time(time) = I18n.l(time, format: :long)
 end

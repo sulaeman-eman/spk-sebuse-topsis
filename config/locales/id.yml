@@ -4,6 +4,8 @@ id:
       default: "%d/%m/%Y"
       long: "%-d %B %Y"
       short: "%-d %b"
+      # Dipakai pada baris tempat dan tanggal laporan: kota, hari, tanggal, tahun.
+      with_day: "%A, %-d %B %Y"
     day_names: [Minggu, Senin, Selasa, Rabu, Kamis, Jumat, Sabtu]
     abbr_day_names: [Min, Sen, Sel, Rab, Kam, Jum, Sab]
     month_names: [~, Januari, Februari, Maret, April, Mei, Juni, Juli, Agustus, September, Oktober, November, Desember]
