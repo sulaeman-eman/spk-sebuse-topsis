@@ -41,3 +41,22 @@
 /*.docx
 /*.doc
 
+
+# Naskah revisi dan berkas turunannya disimpan lokal saja, tidak diikutkan ke
+# repositori. Isinya berupa dokumen tugas akhir beserta gambar hasil render,
+# bukan kode yang perlu dilacak riwayatnya.
+/docs/Bab5/
+/docs/RevisiFullTA1/
+/docs/contoh_symbol_sequence.png
+/docs/gambar/19-use-case-final.png
+/docs/gambar/20-laporan-pdf-2.png
+/docs/gambar/21-laporan-pdf-3.png
+/docs/gambar/22-laporan-pdf-4.png
+
+# Dokumen yang sebelumnya terlacak, kini disimpan lokal saja. Berkasnya tetap
+# ada di direktori kerja, hanya tidak lagi diikutkan ke repositori.
+/README.md
+/docs/ManualPengguna/
+/docs/RevisiBab4/
+/docs/diagram/use-case.svg
+/docs/gambar/14-laporan-pdf.png
