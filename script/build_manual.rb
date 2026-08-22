@@ -5,12 +5,14 @@
 #
 #   ruby script/build_manual.rb                    # manual pengguna
 #   ruby script/build_manual.rb REVISI_USE_CASE.md # dokumen lain
+#   ruby script/build_manual.rb MANUAL_BOOK.md     # manual penggunaan aplikasi
 #
-# Berkas sumber dicari ke seluruh subdirektori docs/, dan hasilnya diletakkan
-# pada direktori yang sama dengan sumbernya. Dengan begitu penataan docs/ boleh
-# diubah tanpa menyunting berkas ini.
+# Berkas sumber dicari ke seluruh subdirektori docs/ dan app_info/, dan hasilnya
+# diletakkan pada direktori yang sama dengan sumbernya. Dengan begitu penataan
+# kedua direktori boleh diubah tanpa menyunting berkas ini.
 
 DOCS_ROOT = File.expand_path("../docs", __dir__)
+SOURCE_ROOTS = [ DOCS_ROOT, File.expand_path("../app_info", __dir__) ].freeze
 
 DOCUMENTS = {
   "MANUAL_PENGGUNA.md" => "manual.html",
@@ -22,7 +24,9 @@ DOCUMENTS = {
   "REVISI_BAB4.md" => "revisi-bab4.html",
   "REVISI_FULL_TA1.md" => "revisi-full-ta1.html",
   "BAB5.md" => "bab5.html",
-  "SEQUENCE_DIAGRAM.md" => "sequence-diagram.html"
+  "SEQUENCE_DIAGRAM.md" => "sequence-diagram.html",
+  "MANUAL_BOOK.md" => "manual-book.html",
+  "KREDENSIAL.md" => "kredensial.html"
 }.freeze
 
 source_name = ARGV[0] ? File.basename(ARGV[0]) : "MANUAL_PENGGUNA.md"
@@ -30,15 +34,17 @@ target_name = DOCUMENTS.fetch(source_name) do
   abort "Dokumen #{source_name} belum terdaftar. Pilihan: #{DOCUMENTS.keys.join(', ')}"
 end
 
-SOURCE = Dir.glob(File.join(DOCS_ROOT, "**", source_name)).first
-abort "Berkas #{source_name} tidak ditemukan di dalam #{DOCS_ROOT}" if SOURCE.nil?
+SOURCE = SOURCE_ROOTS.flat_map { |root| Dir.glob(File.join(root, "**", source_name)) }.first
+abort "Berkas #{source_name} tidak ditemukan di dalam #{SOURCE_ROOTS.join(' maupun ')}" if SOURCE.nil?
 
 TARGET = File.join(File.dirname(SOURCE), target_name)
 
 # Gambar dirujuk sebagai gambar/nama.png pada berkas sumber. Awalan disesuaikan
 # dengan kedalaman berkas hasil terhadap docs/, sehingga rujukannya tetap sah
 # walau dokumen dipindahkan ke subdirektori.
-depth = File.dirname(SOURCE).delete_prefix("#{DOCS_ROOT}/").split("/").reject(&:empty?).size
+# Dokumen di luar docs/ tidak merujuk gambar, jadi kedalamannya nol.
+depth = File.dirname(SOURCE).start_with?(DOCS_ROOT) ?
+  File.dirname(SOURCE).delete_prefix("#{DOCS_ROOT}/").split("/").reject(&:empty?).size : 0
 IMAGE_PREFIX = "../" * depth
 
 def escape(text)
@@ -55,16 +61,29 @@ def image_src(path)
   bersih.start_with?("gambar/") ? "#{IMAGE_PREFIX}#{bersih}" : path
 end
 
-# Penulisan sebaris: gambar, tebal, miring, lalu kode sebaris.
+# Penulisan sebaris: gambar, tautan, tebal, miring, lalu kode sebaris.
 def inline(text)
   escape(text)
     # Pindah baris di dalam sel tabel ditulis sebagai <br> pada berkas sumber,
     # sehingga tandanya perlu dipulihkan setelah proses penyandian.
     .gsub("&lt;br&gt;", "<br>")
     .gsub(/!\[([^\]]*)\]\(([^)]+)\)/) { %(<img src="#{image_src($2)}" alt="#{$1}">) }
+    # Tautan biasa, termasuk tautan daftar isi yang menunjuk ke id judul.
+    .gsub(/\[([^\]]+)\]\(([^)]+)\)/) { %(<a href="#{$2}">#{$1}</a>) }
     .gsub(/\*\*([^*]+)\*\*/) { "<strong>#{$1}</strong>" }
     .gsub(/(?<!\*)\*([^*\n]+)\*(?!\*)/) { "<em>#{$1}</em>" }
     .gsub(/`([^`]+)`/) { "<code>#{$1}</code>" }
+end
+
+# Tautan daftar isi menunjuk ke judul melalui penggalan alamat, sehingga tiap
+# judul perlu ber-id. Aturannya sama dengan yang dipakai GitHub: huruf kecil,
+# spasi menjadi tanda hubung, tanda baca dibuang.
+def heading_id(text)
+  text.downcase
+      .gsub(/[`*_]/, "")
+      .gsub(/[^a-z0-9\s-]/, "")
+      .strip
+      .gsub(/\s+/, "-")
 end
 
 def table_row(line, cell_tag)
@@ -93,7 +112,8 @@ while index < lines.size
 
   when /^(#{'#'}{1,4})\s+(.*)$/
     level = Regexp.last_match(1).length
-    html << "<h#{level}>#{inline(Regexp.last_match(2))}</h#{level}>"
+    title = Regexp.last_match(2)
+    html << %(<h#{level} id="#{heading_id(title)}">#{inline(title)}</h#{level}>)
 
   when /^---+$/
     html << "<hr>"
@@ -129,10 +149,26 @@ while index < lines.size
 
   when /^\s*[-*]\s+/
     items = []
-    while index < lines.size && lines[index].match?(/^\s*[-*]\s+/)
-      items << lines[index].sub(/^\s*[-*]\s+/, "")
+
+    loop do
+      current = lines[index]
+
+      if current.nil?
+        break
+      elsif current.match?(/^\s*[-*]\s+/)
+        items << current.sub(/^\s*[-*]\s+/, "")
+      elsif current.match?(/^\s{2,}\S/) && !current.match?(/^\s*(\||```|>|\d+\.\s)/)
+        # Baris menjorok merupakan lanjutan butir sebelumnya, sebagaimana pada
+        # daftar bernomor. Tanpa penjagaan ini lanjutannya terlempar keluar
+        # daftar dan tampil sebagai paragraf tersendiri.
+        items[-1] = "#{items[-1]} #{current.strip}"
+      else
+        break
+      end
+
       index += 1
     end
+
     index -= 1
     html << "<ul>#{items.map { |item| "<li>#{inline(item)}</li>" }.join}</ul>"
 
@@ -218,6 +254,7 @@ STYLE = <<~CSS
   th, td { border: 1px solid #c9d2dc; padding: 4pt 6pt; text-align: left; vertical-align: top; }
   th { background: #eef3f8; font-weight: bold; }
   em { font-style: italic; }
+  a { color: #1b5e8c; text-decoration: none; }
   blockquote {
     margin: 0 0 12pt; padding: 8pt 12pt;
     background: #f7f9fb; border-left: 3pt solid #1b5e8c;
