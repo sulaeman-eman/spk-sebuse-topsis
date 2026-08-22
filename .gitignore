@@ -46,3 +46,8 @@
 # pada direktori script/ yang tetap dilacak.
 /docs/
 /README.md
+
+# Berkas pendukung aplikasi (manual penggunaan dan daftar kredensial) disimpan
+# lokal saja. app_info/KREDENSIAL.md memuat email dan kata sandi akun, yang akan
+# tersimpan permanen di riwayat git bila sekali saja ter-commit.
+/app_info/
