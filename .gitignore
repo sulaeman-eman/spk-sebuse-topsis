@@ -51,3 +51,7 @@
 # lokal saja. app_info/KREDENSIAL.md memuat email dan kata sandi akun, yang akan
 # tersimpan permanen di riwayat git bila sekali saja ter-commit.
 /app_info/
+
+# Paket pengumpulan bersifat turunan dan memuat dump basis data, jadi tidak
+# perlu dilacak. Susun ulang kapan saja melalui script/build_submission.rb.
+/pengumpulan/
