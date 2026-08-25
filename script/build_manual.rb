@@ -26,7 +26,8 @@ DOCUMENTS = {
   "BAB5.md" => "bab5.html",
   "SEQUENCE_DIAGRAM.md" => "sequence-diagram.html",
   "MANUAL_BOOK.md" => "manual-book.html",
-  "KREDENSIAL.md" => "kredensial.html"
+  "KREDENSIAL.md" => "kredensial.html",
+  "TATA_CARA_PENGGUNAAN.md" => "tata-cara-penggunaan.html"
 }.freeze
 
 source_name = ARGV[0] ? File.basename(ARGV[0]) : "MANUAL_PENGGUNA.md"
