@@ -5,53 +5,61 @@
 # memuat PlantUML maupun Graphviz. Seluruh titik koordinat dihitung oleh berkas
 # ini, sehingga tata letaknya dapat disesuaikan dengan mengubah tetapan di bawah.
 #
+# Tata letak mengikuti permintaan revisi kedua:
+#   - Nama aktor menjadi Admin, Panitia, dan Peserta.
+#   - Admin dan Panitia berada di sebelah kiri batas sistem.
+#   - Peserta berada di sebelah kanan batas sistem.
+#   - UC-01 Login menempati baris paling atas.
+#
 #   ruby script/build_use_case_diagram.rb
 
 TARGET = File.expand_path("../docs/diagram/use-case.svg", __dir__)
 
-WIDTH = 1060
-HEIGHT = 1130
+WIDTH = 1300
+HEIGHT = 1230
 
 # Batas sistem (system boundary).
-BOUNDARY = { x: 555, y: 40, width: 455, height: 1050 }
+BOUNDARY = { x: 280, y: 44, width: 720, height: 1120 }
 
 # Elips use case.
-UC_CX = 782
-UC_RX = 185
+UC_CX = 640
+UC_RX = 205
 UC_RY = 26
 
-# Aktor digambar pada satu lajur di sebelah kiri batas sistem.
-ACTOR_X = 110
+# Aktor pengelola berada pada lajur kiri, aktor peserta pada lajur kanan.
+LEFT_ACTOR_X = 100
+RIGHT_ACTOR_X = 1150
 
 USE_CASES = [
-  { code: "UC-02", name: "Kelola Data Pengguna",        cy: 82 },
-  { code: "UC-03", name: "Kelola Kriteria dan Bobot",   cy: 154 },
-  { code: "UC-11", name: "Kelola Aturan Event",         cy: 226 },
-  { code: "UC-04", name: "Kelola Data Peserta",         cy: 298 },
-  { code: "UC-05", name: "Impor Log Aktivitas",         cy: 370 },
-  { code: "UC-12", name: "Catat Log Aktivitas Manual",  cy: 442 },
-  { code: "UC-06", name: "Pre-processing Data",         cy: 514 },
-  { code: "UC-07", name: "Hitung Metode TOPSIS",        cy: 586 },
-  { code: "UC-13", name: "Lihat Rincian Komputasi",     cy: 686 },
-  { code: "UC-10", name: "Cetak Laporan Peringkat",     cy: 786 },
-  { code: "UC-08", name: "Lihat Papan Peringkat",       cy: 886 },
-  { code: "UC-09", name: "Lihat Detail Skor Individu",  cy: 958 },
-  { code: "UC-01", name: "Login",                       cy: 1030 }
+  { code: "UC-01", name: "Login",                       cy: 88 },
+  { code: "UC-02", name: "Kelola Data Pengguna",        cy: 164 },
+  { code: "UC-03", name: "Kelola Kriteria dan Bobot",   cy: 236 },
+  { code: "UC-11", name: "Kelola Aturan Event",         cy: 308 },
+  { code: "UC-04", name: "Kelola Data Peserta",         cy: 380 },
+  { code: "UC-05", name: "Impor Log Aktivitas",         cy: 452 },
+  { code: "UC-12", name: "Catat Log Aktivitas Manual",  cy: 524 },
+  { code: "UC-06", name: "Pre-processing Data",         cy: 596 },
+  { code: "UC-07", name: "Hitung Metode TOPSIS",        cy: 668 },
+  { code: "UC-13", name: "Lihat Rincian Komputasi",     cy: 768 },
+  { code: "UC-10", name: "Cetak Laporan Peringkat",     cy: 868 },
+  { code: "UC-08", name: "Lihat Papan Peringkat",       cy: 968 },
+  { code: "UC-09", name: "Lihat Detail Skor Individu",  cy: 1044 },
+  { code: "UC-14", name: "Logout",                      cy: 1116 }
 ].freeze
 
 ACTORS = [
-  { name: "Super Admin",       cy: 140 },
-  { name: "Admin Panitia",     cy: 520 },
-  { name: "Peserta (Karyawan)", cy: 960 }
+  { name: "Admin",   side: :left,  cy: 190 },
+  { name: "Panitia", side: :left,  cy: 590 },
+  { name: "Peserta", side: :right, cy: 850 }
 ].freeze
 
 # Asosiasi hanya dituliskan untuk kemampuan yang khas setiap aktor. Kemampuan
-# Admin Panitia tidak diulang pada Super Admin karena keduanya sudah dihubungkan
-# oleh relasi generalisasi.
+# Panitia tidak diulang pada Admin karena keduanya sudah dihubungkan oleh
+# relasi generalisasi.
 ASSOCIATIONS = {
-  "Super Admin" => %w[UC-02 UC-03],
-  "Admin Panitia" => %w[UC-11 UC-04 UC-05 UC-12 UC-06 UC-07 UC-10 UC-08 UC-09 UC-01],
-  "Peserta (Karyawan)" => %w[UC-08 UC-09 UC-01]
+  "Admin" => %w[UC-02 UC-03],
+  "Panitia" => %w[UC-01 UC-11 UC-04 UC-05 UC-12 UC-06 UC-07 UC-10 UC-08 UC-09 UC-14],
+  "Peserta" => %w[UC-01 UC-08 UC-09 UC-14]
 }.freeze
 
 def use_case(code)
@@ -60,6 +68,10 @@ end
 
 def actor(name)
   ACTORS.find { |item| item[:name] == name } or raise ArgumentError, "#{name} tidak ada"
+end
+
+def actor_x(item)
+  item[:side] == :left ? LEFT_ACTOR_X : RIGHT_ACTOR_X
 end
 
 svg = []
@@ -83,27 +95,30 @@ svg << %(<rect width="#{WIDTH}" height="#{HEIGHT}" fill="#ffffff"/>)
 # Batas sistem beserta namanya.
 svg << %(<rect x="#{BOUNDARY[:x]}" y="#{BOUNDARY[:y]}" width="#{BOUNDARY[:width]}" ) +
        %(height="#{BOUNDARY[:height]}" fill="none" stroke="#1a1a1a" stroke-width="1.6"/>)
-svg << %(<text x="#{BOUNDARY[:x] + BOUNDARY[:width] / 2}" y="#{BOUNDARY[:y] - 12}" ) +
+svg << %(<text x="#{BOUNDARY[:x] + BOUNDARY[:width] / 2}" y="#{BOUNDARY[:y] - 14}" ) +
        %(text-anchor="middle" font-size="17" font-weight="bold">Sistem Pendukung Keputusan SEBUSE (TOPSIS)</text>)
 
 # Garis asosiasi digambar lebih dahulu agar tertutup oleh elips dan aktor.
 ASSOCIATIONS.each do |actor_name, codes|
   source = actor(actor_name)
+  kiri = source[:side] == :left
+
+  x1 = kiri ? LEFT_ACTOR_X + 36 : RIGHT_ACTOR_X - 36
+  x2 = kiri ? UC_CX - UC_RX : UC_CX + UC_RX
 
   codes.each do |code|
     target = use_case(code)
-    svg << %(<line x1="#{ACTOR_X + 34}" y1="#{source[:cy]}" x2="#{UC_CX - UC_RX}" ) +
+    svg << %(<line x1="#{x1}" y1="#{source[:cy]}" x2="#{x2}" ) +
            %(y2="#{target[:cy]}" stroke="#55677d" stroke-width="1.2"/>)
   end
 end
 
-# Relasi generalisasi antar aktor: Super Admin mewarisi seluruh kemampuan
-# Admin Panitia.
-atas = actor("Super Admin")
-bawah = actor("Admin Panitia")
-svg << %(<line x1="#{ACTOR_X}" y1="#{atas[:cy] + 62}" x2="#{ACTOR_X}" y2="#{bawah[:cy] - 46}" ) +
+# Relasi generalisasi antar aktor: Admin mewarisi seluruh kemampuan Panitia.
+atas = actor("Admin")
+bawah = actor("Panitia")
+svg << %(<line x1="#{LEFT_ACTOR_X}" y1="#{atas[:cy] + 64}" x2="#{LEFT_ACTOR_X}" y2="#{bawah[:cy] - 48}" ) +
        %(stroke="#1a1a1a" stroke-width="1.4" marker-end="url(#segitiga-generalisasi)"/>)
-svg << %(<text x="#{ACTOR_X + 10}" y="#{(atas[:cy] + bawah[:cy]) / 2}" font-size="14" ) +
+svg << %(<text x="#{LEFT_ACTOR_X + 10}" y="#{(atas[:cy] + bawah[:cy]) / 2}" font-size="14" ) +
        %(font-style="italic" fill="#55677d">generalization</text>)
 
 # Elips use case.
@@ -132,15 +147,16 @@ svg << %(<text x="#{UC_CX + 12}" y="#{(sumber[:cy] + tujuan[:cy]) / 2 + 5}" font
 
 # Gambar aktor berupa tokoh garis.
 ACTORS.each do |item|
+  x = actor_x(item)
   cy = item[:cy]
   svg << %(<g stroke="#1a1a1a" stroke-width="1.6" fill="none">)
-  svg << %(<circle cx="#{ACTOR_X}" cy="#{cy - 34}" r="13" fill="#ffffff"/>)
-  svg << %(<line x1="#{ACTOR_X}" y1="#{cy - 21}" x2="#{ACTOR_X}" y2="#{cy + 14}"/>)
-  svg << %(<line x1="#{ACTOR_X - 22}" y1="#{cy - 6}" x2="#{ACTOR_X + 22}" y2="#{cy - 6}"/>)
-  svg << %(<line x1="#{ACTOR_X}" y1="#{cy + 14}" x2="#{ACTOR_X - 18}" y2="#{cy + 42}"/>)
-  svg << %(<line x1="#{ACTOR_X}" y1="#{cy + 14}" x2="#{ACTOR_X + 18}" y2="#{cy + 42}"/>)
+  svg << %(<circle cx="#{x}" cy="#{cy - 34}" r="13" fill="#ffffff"/>)
+  svg << %(<line x1="#{x}" y1="#{cy - 21}" x2="#{x}" y2="#{cy + 14}"/>)
+  svg << %(<line x1="#{x - 22}" y1="#{cy - 6}" x2="#{x + 22}" y2="#{cy - 6}"/>)
+  svg << %(<line x1="#{x}" y1="#{cy + 14}" x2="#{x - 18}" y2="#{cy + 42}"/>)
+  svg << %(<line x1="#{x}" y1="#{cy + 14}" x2="#{x + 18}" y2="#{cy + 42}"/>)
   svg << %(</g>)
-  svg << %(<text x="#{ACTOR_X}" y="#{cy + 60}" text-anchor="middle" font-size="15" ) +
+  svg << %(<text x="#{x}" y="#{cy + 60}" text-anchor="middle" font-size="15" ) +
          %(font-weight="bold">#{item[:name]}</text>)
 end
 

@@ -35,9 +35,23 @@
 
 # Naskah tugas akhir tidak diikutkan ke repositori. Berkasnya memuat data
 # pribadi penulis (alamat, NPM, email) yang akan tersimpan permanen di riwayat
-# git bila sekali saja ter-commit. Polanya hanya berlaku di direktori utama,
-# sehingga manual pengguna di docs/ tetap diikutkan.
+# git bila sekali saja ter-commit.
 /*.pdf
 /*.docx
 /*.doc
 
+# Seluruh isi docs/ tidak diikutkan ke repositori. Isinya naskah tugas akhir,
+# gambar hasil render, HTML, dan PDF, yang berubah setiap kali revisi diterapkan.
+# Berkasnya tetap ada di direktori kerja, dan dapat dibangun ulang melalui skrip
+# pada direktori script/ yang tetap dilacak.
+/docs/
+/README.md
+
+# Berkas pendukung aplikasi (manual penggunaan dan daftar kredensial) disimpan
+# lokal saja. app_info/KREDENSIAL.md memuat email dan kata sandi akun, yang akan
+# tersimpan permanen di riwayat git bila sekali saja ter-commit.
+/app_info/
+
+# Paket pengumpulan bersifat turunan dan memuat dump basis data, jadi tidak
+# perlu dilacak. Susun ulang kapan saja melalui script/build_submission.rb.
+/pengumpulan/
