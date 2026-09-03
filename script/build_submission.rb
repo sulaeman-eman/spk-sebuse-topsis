@@ -83,8 +83,15 @@ end
 
 # ---------- Menyusun folder ----------
 
-FileUtils.rm_rf(PACKAGE)
-%w[01-Aplikasi/basis-data 02-Panduan 03-Contoh-Berkas 04-Video-Demo].each do |dir|
+# Hanya berkas yang disusun skrip ini yang dihapus, bukan seluruh isi folder
+# paket. Penulis kadang menaruh berkas lain di sana, dan berkas itu tidak boleh
+# hilang hanya karena paket disusun ulang.
+MANAGED = %w[
+  00-BACA-INI-DULU.pdf 01-Aplikasi 02-Panduan 03-Contoh-Berkas 04-Video-Demo 05-Kode-Sumber
+].freeze
+
+FileUtils.rm_rf(MANAGED.map { |nama| File.join(PACKAGE, nama) })
+%w[01-Aplikasi/basis-data 02-Panduan 03-Contoh-Berkas 04-Video-Demo 05-Kode-Sumber].each do |dir|
   FileUtils.mkdir_p(File.join(PACKAGE, dir))
 end
 
@@ -159,7 +166,13 @@ run("bin/rails runner #{File.join(__dir__, 'generate_report_samples_for_package.
   hasil << [ "03-Contoh-Berkas/#{nama}", bytes_to_kb(berkas), "keluaran aplikasi" ]
 end
 
-# 6. Penanda folder video.
+# 6. Lampiran listing program.
+run("#{RbConfig.ruby.inspect} #{File.join(__dir__, 'build_source_listing.rb').inspect}")
+listing = File.join(PACKAGE, "05-Kode-Sumber", "Lampiran_Listing_Program.txt")
+abort "Lampiran listing program gagal dibuat" unless File.exist?(listing)
+hasil << [ "05-Kode-Sumber/Lampiran_Listing_Program.txt", bytes_to_kb(listing), "listing kode sumber" ]
+
+# 7. Penanda folder video.
 File.write(File.join(PACKAGE, "04-Video-Demo", "LETAKKAN_VIDEO_DI_SINI.txt"), <<~TEKS)
   Letakkan rekaman peragaan aplikasi pada folder ini, dengan nama
   demo-spk-sebuse.mp4
