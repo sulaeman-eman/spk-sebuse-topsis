@@ -44,8 +44,10 @@
 # gambar hasil render, HTML, dan PDF, yang berubah setiap kali revisi diterapkan.
 # Berkasnya tetap ada di direktori kerja, dan dapat dibangun ulang melalui skrip
 # pada direktori script/ yang tetap dilacak.
+#
+# README.md tidak termasuk pengecualian ini, karena berkas itu memperkenalkan
+# repositori kepada pembacanya di GitHub.
 /docs/
-/README.md
 
 # Berkas pendukung aplikasi (manual penggunaan dan daftar kredensial) disimpan
 # lokal saja. app_info/KREDENSIAL.md memuat email dan kata sandi akun, yang akan
