@@ -1,3 +1,7 @@
 <% flash.each do |type, message| %>
-  <div class="flash flash--<%= type == "alert" ? "alert" : "notice" %>"><%= message %></div>
+  <% alert = type.to_s == "alert" %>
+  <div class="flash flash--<%= alert ? "alert" : "notice" %>" role="<%= alert ? "alert" : "status" %>">
+    <%= icon(alert ? :alert : :check, size: 18) %>
+    <span><%= message %></span>
+  </div>
 <% end %>

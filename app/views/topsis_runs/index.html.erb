@@ -2,8 +2,9 @@
 
 <div class="page-head">
   <div>
+    <span class="eyebrow">UC-07</span>
     <h1>Perhitungan TOPSIS</h1>
-    <p>UC-07 &middot; Riwayat eksekusi kalkulasi pada <%= @event.name %>.</p>
+    <p>Riwayat eksekusi kalkulasi pada <%= @event.name %>.</p>
   </div>
   <div class="page-head__actions">
     <%= button_to "Hitung TOPSIS", event_topsis_runs_path(@event), class: "btn" %>
@@ -13,6 +14,7 @@
 <div class="card">
   <% if @topsis_runs.empty? %>
     <div class="empty">
+      <%= icon :calculator, size: 30 %>
       <p>
         Belum ada perhitungan. Pastikan pre-processing sudah dijalankan dan total
         bobot kriteria tepat 100%.

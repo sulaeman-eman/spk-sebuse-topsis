@@ -2,9 +2,10 @@
 
 <div class="page-head">
   <div>
+    <span class="eyebrow">UC-08</span>
     <h1>Papan Peringkat</h1>
     <p>
-      UC-08 &middot; <%= @event.name %>
+      <%= @event.name %>
       <% if @topsis_run %>
         &middot; hasil perhitungan <%= l @topsis_run.executed_at, format: :long %>
       <% end %>
@@ -12,8 +13,12 @@
   </div>
   <% if @topsis_run && runs_topsis? %>
     <div class="page-head__actions">
-      <%= link_to "Cetak PDF", event_report_path(@event, @topsis_run, format: :pdf), class: "btn btn--ghost" %>
-      <%= link_to "Export Excel", event_report_path(@event, @topsis_run, format: :xlsx), class: "btn btn--ghost" %>
+      <%= link_to event_report_path(@event, @topsis_run, format: :pdf), class: "btn btn--ghost" do %>
+        <%= icon :file, size: 16 %> Cetak PDF
+      <% end %>
+      <%= link_to event_report_path(@event, @topsis_run, format: :xlsx), class: "btn btn--ghost" do %>
+        <%= icon :file, size: 16 %> Export Excel
+      <% end %>
       <%= link_to "Rincian komputasi", event_topsis_run_path(@event, @topsis_run), class: "btn btn--ghost" %>
       <%= button_to "Hitung ulang", event_topsis_runs_path(@event), class: "btn" %>
     </div>
@@ -22,6 +27,7 @@
 
 <% if @topsis_run.nil? %>
   <div class="card empty">
+    <%= icon :trophy, size: 30 %>
     <p>Hasil pemeringkatan belum tersedia. Panitia belum menjalankan perhitungan TOPSIS.</p>
     <% if runs_topsis? %>
       <%= button_to "Hitung TOPSIS", event_topsis_runs_path(@event), class: "btn" %>
@@ -30,7 +36,7 @@
 <% else %>
   <% if @my_result %>
     <div class="grid grid--stats">
-      <div class="stat">
+      <div class="stat stat--accent">
         <div class="stat__label">Peringkat Anda</div>
         <div class="stat__value"><%= @my_result.award_label %></div>
         <div class="stat__hint">dari <%= @ranking_results.size %> peserta</div>
@@ -42,7 +48,7 @@
       </div>
       <div class="stat">
         <div class="stat__label">Rincian skor</div>
-        <div class="stat__value" style="font-size: 16px; margin-top: 12px;">
+        <div class="stat__value stat__value--sm">
           <%= link_to "Lihat 10 kriteria saya", score_path(@my_result.participant) %>
         </div>
       </div>
@@ -71,7 +77,7 @@
         <tbody>
           <% @ranking_results.each do |result| %>
             <tr class="<%= "row--highlight" if result == @my_result %>">
-              <td><span class="rank rank--<%= result.rank %>"><%= result.award_label %></span></td>
+              <td><%= rank_badge(result) %></td>
               <td class="mono"><%= result.participant.alternative_code %></td>
               <td><%= result.participant.name %></td>
               <td><%= result.participant.department.presence || "-" %></td>

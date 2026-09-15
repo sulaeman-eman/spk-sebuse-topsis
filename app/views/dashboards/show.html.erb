@@ -2,6 +2,7 @@
 
 <div class="page-head">
   <div>
+    <span class="eyebrow">Corporate Wellness Program</span>
     <h1>Dasbor</h1>
     <p>
       Selamat datang, <%= current_user.name %>.
@@ -10,14 +11,19 @@
   </div>
   <% if @event && runs_topsis? %>
     <div class="page-head__actions">
-      <%= link_to "Pre-processing", event_preprocessing_path(@event), class: "btn btn--ghost" %>
-      <%= button_to "Hitung TOPSIS", event_topsis_runs_path(@event), class: "btn" %>
+      <%= link_to event_preprocessing_path(@event), class: "btn btn--ghost" do %>
+        <%= icon :funnel, size: 16 %> Pre-processing
+      <% end %>
+      <%= button_to event_topsis_runs_path(@event), class: "btn" do %>
+        <%= icon :calculator, size: 16 %> Hitung TOPSIS
+      <% end %>
     </div>
   <% end %>
 </div>
 
 <% if @event.nil? %>
   <div class="card empty">
+    <%= icon :inbox, size: 30 %>
     <p>Belum ada event SEBUSE. Jalankan <span class="mono">bin/rails db:seed</span> untuk memuat data awal.</p>
   </div>
 <% else %>
@@ -37,7 +43,7 @@
       <div class="stat__value"><%= @activity_log_count %></div>
       <div class="stat__hint">baris data mentah</div>
     </div>
-    <div class="stat">
+    <div class="stat stat--accent">
       <div class="stat__label">Total bobot</div>
       <div class="stat__value"><%= percent(@total_weight) %></div>
       <div class="stat__hint">
@@ -59,6 +65,7 @@
 
       <% if @latest_run.nil? %>
         <div class="empty">
+          <%= icon :trophy, size: 30 %>
           <p>Perhitungan TOPSIS belum pernah dijalankan.</p>
           <% if runs_topsis? %>
             <%= button_to "Hitung sekarang", event_topsis_runs_path(@event), class: "btn" %>
@@ -77,7 +84,7 @@
             <tbody>
               <% @latest_run.ranking_results.leaderboard.includes(:participant).first(5).each do |result| %>
                 <tr>
-                  <td><span class="rank rank--<%= result.rank %>"><%= result.award_label %></span></td>
+                  <td><%= rank_badge(result) %></td>
                   <td><%= result.participant.name %></td>
                   <td class="num"><%= decimal4(result.preference_value) %></td>
                 </tr>

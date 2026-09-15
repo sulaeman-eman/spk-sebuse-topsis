@@ -16,7 +16,7 @@
 </div>
 
 <div class="grid grid--stats">
-  <div class="stat">
+  <div class="stat stat--accent">
     <div class="stat__label">Peserta</div>
     <div class="stat__value"><%= @participant_count %></div>
   </div>
@@ -40,7 +40,7 @@
 <div class="card">
   <h2>Parameter regulasi</h2>
   <div class="table-wrap">
-    <table>
+    <table class="table--defs">
       <tbody>
         <tr><th>Long Run wajib</th><td><%= decimal2(@event.long_run_target_km) %> KM, 2x sebulan</td></tr>
         <tr><th>Syarat mingguan</th><td><%= @event.weekly_cardio_target %> cardio + <%= @event.weekly_strength_target %> strength</td></tr>

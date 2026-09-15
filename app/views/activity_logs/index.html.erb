@@ -17,6 +17,7 @@
 <div class="card">
   <% if @activity_logs.empty? %>
     <div class="empty">
+      <%= icon :inbox, size: 30 %>
       <p>Belum ada log aktivitas. Catat manual, atau unggah berkas rekap saat fitur impor tersedia.</p>
       <%= link_to "Catat aktivitas pertama", new_participant_activity_log_path(@participant), class: "btn" %>
     </div>

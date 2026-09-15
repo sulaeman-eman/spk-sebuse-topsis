@@ -2,50 +2,77 @@
 
 <div class="page-head">
   <div>
+    <span class="eyebrow">UC-07</span>
     <h1>Rincian Komputasi TOPSIS</h1>
     <p>
-      UC-07 &middot; <%= l @topsis_run.executed_at, format: :long %>
+      <%= l @topsis_run.executed_at, format: :long %>
       <%= "oleh #{@topsis_run.executed_by.name}" if @topsis_run.executed_by %>
     </p>
   </div>
   <div class="page-head__actions">
-    <%= link_to "Cetak PDF", event_report_path(@event, @topsis_run, format: :pdf), class: "btn btn--ghost" %>
-    <%= link_to "Export Excel", event_report_path(@event, @topsis_run, format: :xlsx), class: "btn btn--ghost" %>
+    <%= link_to event_report_path(@event, @topsis_run, format: :pdf), class: "btn btn--ghost" do %>
+      <%= icon :file, size: 16 %> Cetak PDF
+    <% end %>
+    <%= link_to event_report_path(@event, @topsis_run, format: :xlsx), class: "btn btn--ghost" do %>
+      <%= icon :file, size: 16 %> Export Excel
+    <% end %>
     <%= link_to "Papan peringkat", event_leaderboard_path(@event), class: "btn" %>
     <%= link_to "Riwayat", event_topsis_runs_path(@event), class: "btn btn--ghost" %>
   </div>
 </div>
 
 <div class="card">
-  <span class="step__label">Langkah 1</span>
-  <h2>Matriks keputusan (X)</h2>
+  <div class="step">
+    <span class="step__label">1</span>
+    <div>
+      <span class="step__of">Langkah 1 dari 6</span>
+      <h2>Matriks keputusan (X)</h2>
+    </div>
+  </div>
   <p class="card__note">Nilai hasil pre-processing pada skala 0&ndash;100 untuk setiap alternatif.</p>
   <%= render "matrix", criteria: @criteria, rows: @topsis_run.decision_matrix, precision: 2 %>
 </div>
 
 <div class="card">
-  <span class="step__label">Langkah 2</span>
-  <h2>Matriks ternormalisasi (R)</h2>
+  <div class="step">
+    <span class="step__label">2</span>
+    <div>
+      <span class="step__of">Langkah 2 dari 6</span>
+      <h2>Matriks ternormalisasi (R)</h2>
+    </div>
+  </div>
   <div class="formula">r&#8339;&#8341; = x&#8339;&#8341; / &radic;(&sum; x&#8339;&#8341;&sup2;)</div>
   <%= render "matrix", criteria: @criteria, rows: @topsis_run.normalized_matrix, precision: 4 %>
 </div>
 
 <div class="card">
-  <span class="step__label">Langkah 3</span>
-  <h2>Matriks ternormalisasi terbobot (Y)</h2>
+  <div class="step">
+    <span class="step__label">3</span>
+    <div>
+      <span class="step__of">Langkah 3 dari 6</span>
+      <h2>Matriks ternormalisasi terbobot (Y)</h2>
+    </div>
+  </div>
   <div class="formula">y&#8339;&#8341; = w&#8341; &times; r&#8339;&#8341;</div>
   <p class="card__note">
     Bobot yang dipakai saat eksekusi:
-    <% @topsis_run.weights_snapshot.each do |code, weight| %>
-      <span class="badge"><%= code %> <%= percent(weight) %></span>
-    <% end %>
   </p>
+  <div class="weights">
+    <% @topsis_run.weights_snapshot.each do |code, weight| %>
+      <span class="badge badge--accent"><%= code %> <%= percent(weight) %></span>
+    <% end %>
+  </div>
   <%= render "matrix", criteria: @criteria, rows: @topsis_run.weighted_matrix, precision: 4 %>
 </div>
 
 <div class="card">
-  <span class="step__label">Langkah 4</span>
-  <h2>Solusi ideal positif (A&#8314;) dan negatif (A&#8315;)</h2>
+  <div class="step">
+    <span class="step__label">4</span>
+    <div>
+      <span class="step__of">Langkah 4 dari 6</span>
+      <h2>Solusi ideal positif (A&#8314;) dan negatif (A&#8315;)</h2>
+    </div>
+  </div>
   <p class="card__note">
     Seluruh kriteria bertipe benefit, sehingga A&#8314; mengambil nilai terbesar dan
     A&#8315; nilai terkecil pada setiap kolom matriks Y.
@@ -54,7 +81,7 @@
     <table class="matrix">
       <thead>
         <tr>
-          <th>Solusi</th>
+          <th>Solusi ideal</th>
           <% @criteria.each do |criterion| %>
             <th class="num"><%= criterion.code %></th>
           <% end %>
@@ -79,8 +106,13 @@
 </div>
 
 <div class="card">
-  <span class="step__label">Langkah 5 dan 6</span>
-  <h2>Jarak Euclidean dan nilai preferensi</h2>
+  <div class="step">
+    <span class="step__label">5</span>
+    <div>
+      <span class="step__of">Langkah 5 dan 6 dari 6</span>
+      <h2>Jarak Euclidean dan nilai preferensi</h2>
+    </div>
+  </div>
   <div class="formula">
     D&#8314;&#8339; = &radic;(&sum; (y&#8339;&#8341; &minus; y&#8314;&#8341;)&sup2;) &nbsp;&middot;&nbsp;
     D&#8315;&#8339; = &radic;(&sum; (y&#8339;&#8341; &minus; y&#8315;&#8341;)&sup2;) &nbsp;&middot;&nbsp;
@@ -106,7 +138,7 @@
             <td class="num"><%= decimal4(result.d_positive) %></td>
             <td class="num"><%= decimal4(result.d_negative) %></td>
             <td class="num"><%= decimal4(result.preference_value) %></td>
-            <td><span class="rank rank--<%= result.rank %>"><%= result.award_label %></span></td>
+            <td><%= rank_badge(result) %></td>
           </tr>
         <% end %>
       </tbody>
