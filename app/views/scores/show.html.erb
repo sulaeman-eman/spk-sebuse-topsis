@@ -2,9 +2,10 @@
 
 <div class="page-head">
   <div>
+    <span class="eyebrow">UC-09</span>
     <h1>Detail Skor Individu</h1>
     <p>
-      UC-09 &middot; <%= @participant.alternative_code %> <%= @participant.name %>
+      <%= @participant.alternative_code %> <%= @participant.name %>
       <%= "&middot; #{@participant.department}".html_safe if @participant.department.present? %>
     </p>
   </div>
@@ -18,7 +19,7 @@
 
 <% if @ranking_result %>
   <div class="grid grid--stats">
-    <div class="stat">
+    <div class="stat stat--accent">
       <div class="stat__label">Peringkat</div>
       <div class="stat__value"><%= @ranking_result.award_label %></div>
     </div>
@@ -45,6 +46,7 @@
 
   <% if @criterion_scores.empty? %>
     <div class="empty">
+      <%= icon :funnel, size: 30 %>
       <p>Belum ada skor. Pre-processing belum dijalankan untuk peserta ini.</p>
       <% if runs_topsis? %>
         <%= link_to "Ke halaman pre-processing", event_preprocessing_path(@participant.event), class: "btn" %>
@@ -58,7 +60,7 @@
             <th>Kode</th>
             <th>Kriteria</th>
             <th>Bobot</th>
-            <th style="min-width: 170px;">Capaian</th>
+            <th>Capaian</th>
             <th>Catatan evaluasi</th>
           </tr>
         </thead>
@@ -77,7 +79,7 @@
                   <span class="meter__value"><%= decimal2(score.normalized_value) %></span>
                 </div>
               </td>
-              <td style="white-space: normal;"><%= score.notes.presence || "-" %></td>
+              <td class="wrap"><%= score.notes.presence || "-" %></td>
             </tr>
           <% end %>
         </tbody>

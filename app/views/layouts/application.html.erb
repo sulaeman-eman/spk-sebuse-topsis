@@ -6,6 +6,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="SPK SEBUSE">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#12463c" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f1211" media="(prefers-color-scheme: dark)">
+    <meta name="description" content="Sistem Pendukung Keputusan pemeringkatan peserta Corporate Wellness Program SEBUSE dengan metode TOPSIS.">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -15,49 +18,89 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <%# Huruf Fraunces untuk judul dan Plus Jakarta Sans untuk antarmuka. Bila
+        jaringan tidak tersedia, tumpukan huruf sistem pada CSS mengambil alih. %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" media="print" onload="this.media='all'"
+          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
     <% if authenticated? %>
-      <header class="topbar">
-        <div class="topbar__inner">
+      <div class="shell">
+        <aside class="sidebar">
           <%= link_to root_path, class: "brand" do %>
-            <span class="brand__mark">SPK</span>
-            <span class="brand__text">SEBUSE <small>TOPSIS</small></span>
+            <span class="brand__mark"><%= icon :pulse, size: 21 %></span>
+            <span class="brand__text">
+              <span class="brand__name">SEBUSE</span>
+              <span class="brand__meta">SPK &middot; TOPSIS</span>
+            </span>
           <% end %>
 
-          <nav class="nav">
-            <%= nav_link "Dasbor", root_path %>
+          <nav class="nav" aria-label="Navigasi utama">
+            <% event = Event.order(:start_date).last %>
+
+            <div class="nav__group">
+              <span class="nav__title">Ringkasan</span>
+              <%= nav_link "Dasbor", root_path, :gauge %>
+              <%= nav_link "Papan Peringkat", event_leaderboard_path(event), :trophy if event %>
+            </div>
+
             <% if runs_topsis? %>
-              <%= nav_link "Event", events_path %>
-              <%= nav_link "Kriteria", criteria_path %>
-              <% if (event = Event.order(:start_date).last) %>
-                <%= nav_link "Peserta", event_participants_path(event) %>
-                <%= nav_link "Impor Log", new_event_activity_log_import_path(event) %>
-                <%= nav_link "Pre-processing", event_preprocessing_path(event) %>
-                <%= nav_link "TOPSIS", event_topsis_runs_path(event) %>
-                <%= nav_link "Peringkat", event_leaderboard_path(event) %>
+              <div class="nav__group">
+                <span class="nav__title">Data</span>
+                <%= nav_link "Event", events_path, :calendar %>
+                <%= nav_link "Kriteria & Bobot", criteria_path, :sliders %>
+                <% if event %>
+                  <%= nav_link "Peserta", event_participants_path(event), :users %>
+                  <%= nav_link "Impor Log", new_event_activity_log_import_path(event), :upload %>
+                <% end %>
+              </div>
+
+              <% if event %>
+                <div class="nav__group">
+                  <span class="nav__title">Komputasi</span>
+                  <%= nav_link "Pre-processing", event_preprocessing_path(event), :funnel %>
+                  <%= nav_link "Perhitungan TOPSIS", event_topsis_runs_path(event), :calculator %>
+                </div>
               <% end %>
-            <% elsif (event = Event.order(:start_date).last) %>
-              <%= nav_link "Peringkat", event_leaderboard_path(event) %>
             <% end %>
-            <%= nav_link "Pengguna", users_path if manages_users? %>
+
+            <% if manages_users? %>
+              <div class="nav__group">
+                <span class="nav__title">Sistem</span>
+                <%= nav_link "Pengguna", users_path, :shield %>
+              </div>
+            <% end %>
           </nav>
 
           <div class="account">
-            <span class="account__name"><%= current_user.name %></span>
-            <span class="badge badge--role"><%= role_label(current_user) %></span>
-            <%= button_to "Keluar", session_path, method: :delete, class: "btn btn--ghost btn--sm" %>
+            <span class="account__avatar" aria-hidden="true"><%= user_initials(current_user) %></span>
+            <span class="account__body">
+              <span class="account__name"><%= current_user.name %></span>
+              <span class="account__role"><%= role_label(current_user) %></span>
+            </span>
+            <%= button_to session_path, method: :delete, class: "account__out",
+                  title: "Keluar", "aria-label": "Keluar" do %>
+              <%= icon :logout, size: 17 %>
+            <% end %>
           </div>
-        </div>
-      </header>
-    <% end %>
+        </aside>
 
-    <main class="<%= authenticated? ? "page" : "page page--bare" %>">
-      <%= render "shared/flash" %>
-      <%= yield %>
-    </main>
+        <main class="page">
+          <%= render "shared/flash" %>
+          <%= yield %>
+        </main>
+      </div>
+    <% else %>
+      <main class="page page--bare">
+        <%= render "shared/flash" %>
+        <%= yield %>
+      </main>
+    <% end %>
   </body>
 </html>

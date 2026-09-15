@@ -2,11 +2,14 @@
 
 <div class="page-head">
   <div>
+    <span class="eyebrow">UC-05</span>
     <h1>Import Log Aktivitas</h1>
-    <p>UC-05 &middot; Unggah berkas rekap aktivitas fisik peserta dari medicalrjbb.com, Strava, atau Timestamp.</p>
+    <p>Unggah berkas rekap aktivitas fisik peserta dari medicalrjbb.com, Strava, atau Timestamp.</p>
   </div>
   <div class="page-head__actions">
-    <%= link_to "Unduh template CSV", template_event_activity_log_imports_path(@event), class: "btn btn--ghost" %>
+    <%= link_to template_event_activity_log_imports_path(@event), class: "btn btn--ghost" do %>
+      <%= icon :file, size: 16 %> Unduh template CSV
+    <% end %>
   </div>
 </div>
 
@@ -39,7 +42,7 @@
     </div>
 
     <div class="form__actions">
-      <%= form.submit "Import Data", class: "btn" %>
+      <%= form.submit "Import data", class: "btn" %>
       <%= link_to "Batal", event_participants_path(@event), class: "btn btn--ghost" %>
     </div>
   <% end %>
@@ -111,6 +114,7 @@
 
   <% if @batches.empty? %>
     <div class="empty">
+      <%= icon :inbox, size: 30 %>
       <p>Belum ada berkas yang diimpor untuk event ini.</p>
     </div>
   <% else %>
